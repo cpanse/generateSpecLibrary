@@ -1,0 +1,144 @@
+---
+title: "specLTest"
+author: "Witold Wolski"
+date: "29 Jul 2015"
+output: pdf_document
+---
+
+
+```{r}
+rm(list=ls())
+library(specL)
+packageVersion('specL')
+```
+
+Define the parameter of the library generation
+
+```{r}
+<<<<<<< HEAD
+OUTPUTDIR = "."
+WORKDIR = "."
+
+=======
+directory <- "c:/user/"
+AnntotationFile <- "annotion.txt"
+OUTPUTDIR<-"output"
+NON_REDUNDANT <- "blib.blib.filtered"
+REDUNDANT <- "blib.blib"
+
+SWATH_LIBRARY <- "p1503_default_top10min3SpecLib_again.txt"
+>>>>>>> 8dba4b72442c51377975f691862ca6fa11517d3d
+FASTA_FILE <- "fgcz_10090_20140715.fasta"
+SPECLIBRARYRDATA = file.path(OUTPUTDIR, "specLLibrary.RData")
+SWATH_LIBRARY <- file.path(OUTPUTDIR,"assay_library.tsv")
+
+TOPIONS <- 6
+
+MZ_ERROR <- 0.05 # e.g for Q-Exactive
+FRAGMENTIONMZRANGE <- c(300,1250)
+FRAGMENTIONRANGE <- c(3,200)
+
+ANNOTATEDRDATA <- file.path(WORKDIR,"Annotated.RData")
+NON_REDUNDANT <- file.path(WORKDIR,"blib.blib.filtered.db")
+REDUNDANT <- file.path(WORKDIR,"blib.blib.db")
+
+```
+
+Define which fragments to use.
+
+```{r, echo=FALSE}
+fragmentIonFunctionUpTo3 <- function (b, y) {
+  Hydrogen <- 1.007825
+  Oxygen <- 15.994915
+  Nitrogen <- 14.003074
+  b1_ <- (b )
+  y1_ <- (y )
+  b2_ <- (b + Hydrogen) / 2
+  y2_ <- (y + Hydrogen) / 2 
+  return( cbind(b1_, y1_, b2_, y2_) )
+}
+```
+
+## Loading the libraries
+
+```{r}
+system.time( nonRedundantBlib <- read.bibliospec(NON_REDUNDANT) )
+system.time( redundantBlib <- read.bibliospec(REDUNDANT) )
+class(redundantBlib)
+
+```
+
+
+# Annotate the peptides with protein id's
+
+```{r}
+system.time(annotatedBlib <- annotate.protein_id(nonRedundantBlib, file=FASTA_FILE))
+save(annotatedBlib, file=ANNOTATEDRDATA, compress=TRUE)
+
+```
+
+```{r}
+
+load(ANNOTATEDRDATA)
+specLibrary <- genSwathIonLib(data = annotatedBlib,
+  data.fit = redundantBlib,
+  max.mZ.Da.error = MZ_ERROR,
+  topN = TOPIONS,
+  fragmentIonMzRange=FRAGMENTIONMZRANGE,
+  fragmentIonRange=FRAGMENTIONRANGE,
+  fragmentIonFUN = fragmentIonFunctionUpTo3)
+
+save(specLibrary , file = SPECLIBRARYRDATA )
+
+```
+
+# Summaries
+
+```{r,echo=TRUE}
+MySum <- summary(specLibrary)
+specLibrary@ionlibrary[[1]]
+
+```
+
+# Write output
+
+
+```{r}
+<<<<<<< HEAD
+write.spectronaut(specLibrary,file=SWATH_LIBRARY)
+
+```
+
+=======
+slotNames(specLibrary)
+
+extractPrecursorCharge = function(tmp){
+  peps <- paste(tmp@peptideModSeq, tmp@prec_z,sep=".")
+  prots <- tmp@proteinInformation
+  peps <- rep(peps,length(prots))
+  cbind(prots,peps)
+}
+
+extractPeptide = function(tmp){
+  peps <- tmp@peptide_sequence
+  prots <- tmp@proteinInformation
+  peps <- rep(peps,length(prots))
+  cbind(prots,peps)
+}
+
+res = lapply(specLibrary@ionlibrary,extractPrecursorCharge)
+
+proteinPeptideTable <- function(specLibrary){
+  res = lapply(specLibrary@ionlibrary,extractPeptide)
+  
+  res2<-NULL
+  for(i in 1:length(res)){
+    res2 <- rbind(res2, res[[i]] )
+  }
+}
+
+write.csv(res2,file="res2.csv")
+>>>>>>> 8dba4b72442c51377975f691862ca6fa11517d3d
+
+
+
