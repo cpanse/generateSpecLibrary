@@ -19,8 +19,10 @@ if(!exists("OUTPUTDIR")){
   WORKDIR = "."
 
   FASTA_FILE <- "fgcz_10090_20140715.fasta"
-  TOPIONS <- 6
-  MINIONS <- 6
+  MAX_IONS <- 6
+  MIN_IONS <- 6
+  BLIB_FILTERED <- "blib.blib.filtered.db"
+  BLIB_REDUNDANT <- "blib.blib.db"
 } else{
   print("NOW I am starting to rock!")
 }
@@ -31,10 +33,10 @@ PEPPROTMAPPING <- file.path(OUTPUTDIR,"pepprot.csv")
 
 MZ_ERROR <- 0.05 # e.g for Q-Exactive
 FRAGMENTIONMZRANGE <- c(300,1250)
-FRAGMENTIONRANGE <- c(MINIONS,200)
+FRAGMENTIONRANGE <- c(MIN_IONS,200)
 
 ANNOTATEDRDATA <- file.path(WORKDIR,"Annotated.RData")
-NON_REDUNDANT <- file.path(WORKDIR,"blib.blib.filtered.db")
+NON_REDUNDANT <- file.path(WORKDIR,BLIB_FILTERED)
 REDUNDANT <- file.path(WORKDIR,"blib.blib.db")
 
 ```
@@ -77,9 +79,9 @@ load(ANNOTATEDRDATA)
 specLibrary <- genSwathIonLib(data = annotatedBlib,
   data.fit = redundantBlib,
   max.mZ.Da.error = MZ_ERROR,
-  topN = TOPIONS,
-  fragmentIonMzRange=FRAGMENTIONMZRANGE,
-  fragmentIonRange=FRAGMENTIONRANGE,
+  topN = MAX_IONS,
+  fragmentIonMzRange = FRAGMENTIONMZRANGE,
+  fragmentIonRange = FRAGMENTIONRANGE,
   fragmentIonFUN = fragmentIonFunctionUpTo3)
 
 save(specLibrary , file = SPECLIBRARYRDATA )
