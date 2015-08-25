@@ -71,18 +71,16 @@ if __name__ == "__main__":
 
     lgp = LibraryGenerationParameters()
     lgp.set_up(assay_library_yaml)
+
     print lgp.OUT_ZIP , lgp.LOCAL_WORK_DIR, lgp.JOB_ID, lgp.LIST_OF_DAT_FILES, lgp.RETURN_CODE
-
     if True:
-
         blsl = BiblioSpecLib.BlibBuild(lgp.LIST_OF_DAT_FILES, lgp.LOCAL_RES_DIR, lgp.LOCAL_WORK_DIR)
         blsl.run()
-
-
 
     lgp.write_result_yaml()
     if lgp.RETURN_CODE != 0:
         sys.exit(lgp.RETURN_VALUE)
+
 
 
 

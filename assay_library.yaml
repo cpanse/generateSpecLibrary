@@ -2,22 +2,11 @@
 # if it is started from B-Fabric it will eecuted as bfabric user!
 # ./xxxx.py thisYamlFile
 
-<<<<<<< HEAD
 jobname : Assay Library Generation
-
 bfabric_external_job_id : 12345
-
 topN : 6
-
 
 input_mascot_dat_file :
-=======
-bfabric_externaljobid : 12345
-
-topN : 6
-
-input_dat :
->>>>>>> 8dba4b72442c51377975f691862ca6fa11517d3d
   - file:///Volumes/data/specLtesting/p1503_genSixRepLibrary.R
   - file:///Volumes/data/specLtesting/res2.csv
 

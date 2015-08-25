@@ -15,19 +15,9 @@ packageVersion('specL')
 Define the parameter of the library generation
 
 ```{r}
-<<<<<<< HEAD
 OUTPUTDIR = "."
 WORKDIR = "."
 
-=======
-directory <- "c:/user/"
-AnntotationFile <- "annotion.txt"
-OUTPUTDIR<-"output"
-NON_REDUNDANT <- "blib.blib.filtered"
-REDUNDANT <- "blib.blib"
-
-SWATH_LIBRARY <- "p1503_default_top10min3SpecLib_again.txt"
->>>>>>> 8dba4b72442c51377975f691862ca6fa11517d3d
 FASTA_FILE <- "fgcz_10090_20140715.fasta"
 SPECLIBRARYRDATA = file.path(OUTPUTDIR, "specLLibrary.RData")
 SWATH_LIBRARY <- file.path(OUTPUTDIR,"assay_library.tsv")
@@ -104,41 +94,8 @@ specLibrary@ionlibrary[[1]]
 
 
 ```{r}
-<<<<<<< HEAD
 write.spectronaut(specLibrary,file=SWATH_LIBRARY)
 
 ```
-
-=======
-slotNames(specLibrary)
-
-extractPrecursorCharge = function(tmp){
-  peps <- paste(tmp@peptideModSeq, tmp@prec_z,sep=".")
-  prots <- tmp@proteinInformation
-  peps <- rep(peps,length(prots))
-  cbind(prots,peps)
-}
-
-extractPeptide = function(tmp){
-  peps <- tmp@peptide_sequence
-  prots <- tmp@proteinInformation
-  peps <- rep(peps,length(prots))
-  cbind(prots,peps)
-}
-
-res = lapply(specLibrary@ionlibrary,extractPrecursorCharge)
-
-proteinPeptideTable <- function(specLibrary){
-  res = lapply(specLibrary@ionlibrary,extractPeptide)
-  
-  res2<-NULL
-  for(i in 1:length(res)){
-    res2 <- rbind(res2, res[[i]] )
-  }
-}
-
-write.csv(res2,file="res2.csv")
->>>>>>> 8dba4b72442c51377975f691862ca6fa11517d3d
-
 
 

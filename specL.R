@@ -4,8 +4,8 @@ library(specL)
 packageVersion('specL')
 
 ## ------------------------------------------------------------------------
-OUTPUTDIR = ""
-WORKDIR = ""
+OUTPUTDIR = "."
+WORKDIR = "."
 
 FASTA_FILE <- "fgcz_10090_20140715.fasta"
 SPECLIBRARYRDATA = file.path(OUTPUTDIR, "specLLibrary.RData")
@@ -37,7 +37,6 @@ fragmentIonFunctionUpTo3 <- function (b, y) {
 ## ------------------------------------------------------------------------
 system.time( nonRedundantBlib <- read.bibliospec(NON_REDUNDANT) )
 system.time( redundantBlib <- read.bibliospec(REDUNDANT) )
-nonRedundantBlib[[1]]
 class(redundantBlib)
 
 
@@ -47,7 +46,8 @@ save(annotatedBlib, file=ANNOTATEDRDATA, compress=TRUE)
 
 
 ## ------------------------------------------------------------------------
-load(RDATAFILENAME)
+
+load(ANNOTATEDRDATA)
 specLibrary <- genSwathIonLib(data = annotatedBlib,
   data.fit = redundantBlib,
   max.mZ.Da.error = MZ_ERROR,
@@ -55,11 +55,16 @@ specLibrary <- genSwathIonLib(data = annotatedBlib,
   fragmentIonMzRange=FRAGMENTIONMZRANGE,
   fragmentIonRange=FRAGMENTIONRANGE,
   fragmentIonFUN = fragmentIonFunctionUpTo3)
+
 save(specLibrary , file = SPECLIBRARYRDATA )
+
 
 ## ----echo=TRUE-----------------------------------------------------------
 MySum <- summary(specLibrary)
+specLibrary@ionlibrary[[1]]
+
 
 ## ------------------------------------------------------------------------
-write.spectronaut(specLibrary)
+write.spectronaut(specLibrary,file=SWATH_LIBRARY)
+
 
