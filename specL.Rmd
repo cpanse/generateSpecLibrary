@@ -7,7 +7,6 @@ output: pdf_document
 
 
 ```{r}
-rm(list=ls())
 library(specL)
 packageVersion('specL')
 ```
@@ -15,18 +14,24 @@ packageVersion('specL')
 Define the parameter of the library generation
 
 ```{r}
-OUTPUTDIR = "."
-WORKDIR = "."
+if(!exists("OUTPUTDIR")){
+  OUTPUTDIR = "."
+  WORKDIR = "."
 
-FASTA_FILE <- "fgcz_10090_20140715.fasta"
+  FASTA_FILE <- "fgcz_10090_20140715.fasta"
+  TOPIONS <- 6
+  MINIONS <- 6
+} else{
+  print("NOW I am starting to rock!")
+}
+
 SPECLIBRARYRDATA = file.path(OUTPUTDIR, "specLLibrary.RData")
 SWATH_LIBRARY <- file.path(OUTPUTDIR,"assay_library.tsv")
-
-TOPIONS <- 6
+PEPPROTMAPPING <- file.path(OUTPUTDIR,"pepprot.csv")
 
 MZ_ERROR <- 0.05 # e.g for Q-Exactive
 FRAGMENTIONMZRANGE <- c(300,1250)
-FRAGMENTIONRANGE <- c(3,200)
+FRAGMENTIONRANGE <- c(MINIONS,200)
 
 ANNOTATEDRDATA <- file.path(WORKDIR,"Annotated.RData")
 NON_REDUNDANT <- file.path(WORKDIR,"blib.blib.filtered.db")
@@ -54,7 +59,6 @@ fragmentIonFunctionUpTo3 <- function (b, y) {
 ```{r}
 system.time( nonRedundantBlib <- read.bibliospec(NON_REDUNDANT) )
 system.time( redundantBlib <- read.bibliospec(REDUNDANT) )
-class(redundantBlib)
 
 ```
 
@@ -86,7 +90,6 @@ save(specLibrary , file = SPECLIBRARYRDATA )
 
 ```{r,echo=TRUE}
 MySum <- summary(specLibrary)
-specLibrary@ionlibrary[[1]]
 
 ```
 
@@ -98,4 +101,8 @@ write.spectronaut(specLibrary,file=SWATH_LIBRARY)
 
 ```
 
+```{r}
+protpep = getProteinPeptideTable(specLibrary)
+write.csv(protpep,file=PEPPROTMAPPING)
+```
 
