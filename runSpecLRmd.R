@@ -18,7 +18,7 @@ if (length(args)>=4){
       BLIB_REDUNDANT, " BLIB_FILTERED = ",BLIB_FILTERED, "\n"   )
   
   knit2pdf("specL.Rmd",output=file.path(OUTPUTDIR,"specL.pdf"))
-  
+
 }else{
   print("runSpecLRmd.R OUTPUTDIR INPUTDIR FASTA_FILE MIN_IONS MAX_IONS BLIB_FILTERED BLIB_REDUNDANT")
 }
