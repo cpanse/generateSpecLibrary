@@ -114,4 +114,4 @@ class BlibBuild(ApplicationBase):
 
         return self.RESULT.return_code
 
-class SpecLApplication(ApplicationBase):
+#class SpecLApplication(ApplicationBase):
