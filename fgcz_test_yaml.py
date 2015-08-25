@@ -21,6 +21,7 @@ class LibraryGenerationParameters:
     LOCAL_WORK_DIR = "./temp" # where temporary results are stored.
     LOCAL_RES_DIR = "./res" # where results are stored
     TOP_N_TRANSITIONS=6
+    MASCOT_DATABASE_LOCATION = ""
 
     def check_dat_files(self):
         if len(self.LIST_OF_DAT_FILES) == 0:
@@ -57,6 +58,7 @@ class LibraryGenerationParameters:
 
         self.OUT_ZIP = replaceUriHeader(self.parameters["output_zip"])
         self.LIST_OF_DAT_FILES = self.parameters["input_mascot_dat_file"]
+        self.MASCOT_DATABASE_LOCATION = self.parameters['mascot_database_location']
         self.check_dat_files()
 
 
@@ -74,7 +76,10 @@ if __name__ == "__main__":
 
     print lgp.OUT_ZIP , lgp.LOCAL_WORK_DIR, lgp.JOB_ID, lgp.LIST_OF_DAT_FILES, lgp.RETURN_CODE
     if True:
-        blsl = BiblioSpecLib.BlibBuild(lgp.LIST_OF_DAT_FILES, lgp.LOCAL_RES_DIR, lgp.LOCAL_WORK_DIR)
+        blsl = BiblioSpecLib.BlibBuild(lgp.LIST_OF_DAT_FILES,
+                                       lgp.LOCAL_RES_DIR,
+                                       lgp.LOCAL_WORK_DIR,
+                                       lgp.MASCOT_DATABASE_LOCATION)
         blsl.run()
 
     lgp.write_result_yaml()
