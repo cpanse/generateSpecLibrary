@@ -58,22 +58,27 @@ fragmentIonFunctionUpTo3 <- function (b, y) {
 
 ## Loading the libraries
 
-```{r readDatabases}
+```{r readDatabases, eval=TRUE}
 system.time( nonRedundantBlib <- read.bibliospec(NON_REDUNDANT) )
 system.time( redundantBlib <- read.bibliospec(REDUNDANT) )
+save(redundantBlib,"redundant.Rdata")
+save(nonRedundantBlib,"nonredundant.Rdata")
 
 ```
 
 
 # Annotate the peptides with protein id's
 
-```{r annotateDatabases}
+```{r annotateDatabases,eval=FALSE}
 system.time(annotatedBlib <- annotate.protein_id(nonRedundantBlib, file=FASTA_FILE))
 save(annotatedBlib, file=ANNOTATEDRDATA, compress=TRUE)
 
 ```
 
 ```{r generateLibrary}
+
+load("redundant.Rdata")
+load("nonredundant.Rdata")
 
 load(ANNOTATEDRDATA)
 specLibrary <- genSwathIonLib(data = annotatedBlib,
