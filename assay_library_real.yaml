@@ -1,6 +1,7 @@
 jobname : Assay Library Generation
-bfabric_external_job_id : 12345
-topN : 6
+bfabric_external_job_id : 12346
+minN : 6
+maxN : 6
 input_mascot_dat_file :
   - file:///usr/local/mascot/data/20150715/F221103.dat
   - file:///usr/local/mascot/data/20150715/F221097.dat

@@ -96,16 +96,21 @@ class BlibBuild(ApplicationBase):
     BLIB_FILE_FILTERED = "blib.blib.filtered.db"
     MASCOT_DATABASE_LOCATION = ""
     MASCOT_DATABASE = ""
+    MAX_N = 6
+    MIN_N = 6
 
     mascot_dat_files = []
 
     def __init__(self, mascot_dat_files,
-                 result_dir, work_dir, mascot_database_location):
+                 result_dir, work_dir, mascot_database_location,
+                 minN, maxN):
         ApplicationBase.__init__(self, "BlibBuild", result_dir)
         self.mascot_dat_files = mascot_dat_files
         self.RESULT_DIR = result_dir
         self.WORK_DIR = work_dir
         self.MASCOT_DATABASE_LOCATION = mascot_database_location
+        self.MIN_N = minN
+        self.MAX_N = maxN
 
     def get_mascot_databases(self):
         databases = []
@@ -136,7 +141,12 @@ class BlibBuild(ApplicationBase):
         if self.RESULT.return_code != 0:
             raise SystemError("Return code of Command {} is not as expected : {}".format(blib_command, self.RESULT.return_code))
 
-
+    def run_specL(self, fasta_file, minN, maxN, redundant_blib, filtered_blib ):
+        specL_command = "runSpecLRmd.R {0} {1} {2} {3} {4} {5}".format(self.RESULT_DIR, self.WORK_DIR, fasta_file,
+                                                                       minN, maxN, redundant_blib, filtered_blib)
+        self.executeCommand(specL_command)
+        if self.RESULT.return_code != 0:
+            raise SystemError("Return code of Command {} is not as expected : {}".format(specL_command, self.RESULT.return_code))
 
     def run(self):
         self.MASCOT_DATABASE = self.get_mascot_databases()
@@ -146,7 +156,8 @@ class BlibBuild(ApplicationBase):
         filtered_blib_file = os.path.join(self.WORK_DIR,  self.BLIB_FILE_FILTERED)
         self.run_blib_filter( redundant_blib_file, filtered_blib_file)
         self.logResults()
-
+        self.run_specL(self.MASCOT_DATABASE, self.MIN_N, self.MAX_N, redundant_blib_file, filtered_blib_file)
+        self.logResults()
         return self.RESULT.return_code
 
 #class SpecLApplication(ApplicationBase):
