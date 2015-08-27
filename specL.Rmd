@@ -96,7 +96,6 @@ specLibrary <- genSwathIonLib(data = annotatedBlib,
   fragmentIonFUN = fragmentIonFunctionUpTo3)
 
 save(specLibrary , file = SPECLIBRARYRDATA )
-
 ```
 
 ## Summaries
