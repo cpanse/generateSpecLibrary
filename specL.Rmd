@@ -6,6 +6,7 @@ output: pdf_document
 ---
 
 ```{r prepareEnvLoadLibraries}
+R.Version()
 library(specL)
 packageVersion('specL')
 ```
@@ -14,8 +15,8 @@ Define the parameter of the library generation
 
 ```{r setparameters}
 if(!exists("OUTPUTDIR")){
-  OUTPUTDIR = "res.12345"
-  WORKDIR = "temp.12345"
+  OUTPUTDIR = "res.12347"
+  WORKDIR = "temp.12347"
   FASTA_FILE <- "fgcz_10090_20140715.fasta"
   MAX_IONS <- 6
   MIN_IONS <- 6
@@ -35,13 +36,23 @@ FRAGMENTIONRANGE <- c(MIN_IONS,200)
 
 ANNOTATEDRDATA <- file.path(WORKDIR,"Annotated.RData")
 NON_REDUNDANT <- file.path(WORKDIR,BLIB_FILTERED)
-REDUNDANT <- file.path(WORKDIR,"blib.blib.db")
+REDUNDANT <- file.path(WORKDIR,BLIB_REDUNDANT)
+
+cat("Set params SPECLIBRARYRDATA = ",SPECLIBRARYRDATA , "\n",
+    " SWATH_LIBRARY = ", SWATH_LIBRARY, "\n", 
+    " PEPPROTMAPPING = ",PEPPROTMAPPING , "\n",
+    " MZ_ERROR = ",MZ_ERROR, " FRAGMENTIONMZRANGE = ", FRAGMENTIONMZRANGE, "\n",
+    " FRAGMENTIONRANGE = ",FRAGMENTIONRANGE, "\n",
+    " ANNOTATEDRDATA = ",ANNOTATEDRDATA, "\n",
+    " NON_REDUNDANT = ",NON_REDUNDANT , "\n",
+    " REDUNDANT = ",REDUNDANT, "\n"   )
 
 ```
 
+
 Define which fragments to use.
 
-```{r defineFragmentFunction ,echo=FALSE}
+```{r defineFragmentFunction}
 fragmentIonFunctionUpTo3 <- function (b, y) {
   Hydrogen <- 1.007825
   Oxygen <- 15.994915
@@ -62,22 +73,20 @@ system.time( nonRedundantBlib <- read.bibliospec(NON_REDUNDANT) )
 system.time( redundantBlib <- read.bibliospec(REDUNDANT) )
 save(redundantBlib,file=file.path(WORKDIR,"redundant.Rdata"))
 save(nonRedundantBlib,file=file.path(WORKDIR,"nonredundant.Rdata"))
-
 ```
 ## Annotate the peptides with protein id's
 
 ```{r annotateDatabases,eval=TRUE}
 system.time(annotatedBlib <- annotate.protein_id(nonRedundantBlib, file=FASTA_FILE))
 save(annotatedBlib, file=ANNOTATEDRDATA, compress=TRUE)
-
 ```
 
 ```{r generateLibrary}
-
 load(file.path(WORKDIR,"redundant.Rdata"))
 load(file.path(WORKDIR,"nonredundant.Rdata"))
 
 load(ANNOTATEDRDATA)
+print(length(annotatedBlib))
 specLibrary <- genSwathIonLib(data = annotatedBlib,
   data.fit = redundantBlib,
   max.mZ.Da.error = MZ_ERROR,
@@ -87,7 +96,6 @@ specLibrary <- genSwathIonLib(data = annotatedBlib,
   fragmentIonFUN = fragmentIonFunctionUpTo3)
 
 save(specLibrary , file = SPECLIBRARYRDATA )
-
 ```
 
 ## Summaries
@@ -103,12 +111,11 @@ MySum <- summary(specLibrary)
 
 ```{r writeSpecnaut}
 write.spectronaut(specLibrary,file=SWATH_LIBRARY)
-
 ```
 
 ```{r writepepProt}
-
 protpep = getProteinPeptideTable(specLibrary)
+dim(protpep)
 write.csv(protpep,file=PEPPROTMAPPING)
 
 ```
