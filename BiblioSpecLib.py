@@ -156,8 +156,8 @@ class BlibBuild(ApplicationBase):
         filtered_blib_file = os.path.join(self.WORK_DIR,  self.BLIB_FILE_FILTERED)
         self.run_blib_filter( redundant_blib_file, filtered_blib_file)
         self.logResults()
-        self.run_specL(self.MASCOT_DATABASE, self.MIN_N, self.MAX_N, redundant_blib_file, filtered_blib_file)
-        self.logResults()
+        #self.run_specL(self.MASCOT_DATABASE, self.MIN_N, self.MAX_N, redundant_blib_file, filtered_blib_file)
+        #self.logResults()
         return self.RESULT.return_code
 
 #class SpecLApplication(ApplicationBase):
