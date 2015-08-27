@@ -5,7 +5,6 @@ date: "29 Jul 2015"
 output: pdf_document
 ---
 
-
 ```{r prepareEnvLoadLibraries}
 library(specL)
 packageVersion('specL')
@@ -17,7 +16,6 @@ Define the parameter of the library generation
 if(!exists("OUTPUTDIR")){
   OUTPUTDIR = "res.12345"
   WORKDIR = "temp.12345"
-
   FASTA_FILE <- "fgcz_10090_20140715.fasta"
   MAX_IONS <- 6
   MIN_IONS <- 6
@@ -28,8 +26,8 @@ if(!exists("OUTPUTDIR")){
 }
 
 SPECLIBRARYRDATA = file.path(OUTPUTDIR, "specLLibrary.RData")
-SWATH_LIBRARY <- file.path(OUTPUTDIR,"assay_library.tsv")
-PEPPROTMAPPING <- file.path(OUTPUTDIR,"pepprot.csv")
+SWATH_LIBRARY <- file.path(OUTPUTDIR, "assay_library.tsv")
+PEPPROTMAPPING <- file.path(OUTPUTDIR, "pepprot.csv")
 
 MZ_ERROR <- 0.05 # e.g for Q-Exactive
 FRAGMENTIONMZRANGE <- c(300,1250)
@@ -54,6 +52,7 @@ fragmentIonFunctionUpTo3 <- function (b, y) {
   y2_ <- (y + Hydrogen) / 2 
   return( cbind(b1_, y1_, b2_, y2_) )
 }
+
 ```
 
 ## Loading the libraries
@@ -61,15 +60,13 @@ fragmentIonFunctionUpTo3 <- function (b, y) {
 ```{r readDatabases, eval=TRUE}
 system.time( nonRedundantBlib <- read.bibliospec(NON_REDUNDANT) )
 system.time( redundantBlib <- read.bibliospec(REDUNDANT) )
-save(redundantBlib,"redundant.Rdata")
-save(nonRedundantBlib,"nonredundant.Rdata")
+save(redundantBlib,file=file.path(WORKDIR,"redundant.Rdata"))
+save(nonRedundantBlib,file=file.path(WORKDIR,"nonredundant.Rdata"))
 
 ```
+## Annotate the peptides with protein id's
 
-
-# Annotate the peptides with protein id's
-
-```{r annotateDatabases,eval=FALSE}
+```{r annotateDatabases,eval=TRUE}
 system.time(annotatedBlib <- annotate.protein_id(nonRedundantBlib, file=FASTA_FILE))
 save(annotatedBlib, file=ANNOTATEDRDATA, compress=TRUE)
 
@@ -77,8 +74,8 @@ save(annotatedBlib, file=ANNOTATEDRDATA, compress=TRUE)
 
 ```{r generateLibrary}
 
-load("redundant.Rdata")
-load("nonredundant.Rdata")
+load(file.path(WORKDIR,"redundant.Rdata"))
+load(file.path(WORKDIR,"nonredundant.Rdata"))
 
 load(ANNOTATEDRDATA)
 specLibrary <- genSwathIonLib(data = annotatedBlib,
@@ -93,14 +90,15 @@ save(specLibrary , file = SPECLIBRARYRDATA )
 
 ```
 
-# Summaries
+## Summaries
 
 ```{r printSummary,echo=TRUE}
+load(SPECLIBRARYRDATA)
 MySum <- summary(specLibrary)
 
 ```
 
-# Write output
+## Write output
 
 
 ```{r writeSpecnaut}
@@ -109,7 +107,9 @@ write.spectronaut(specLibrary,file=SWATH_LIBRARY)
 ```
 
 ```{r writepepProt}
+
 protpep = getProteinPeptideTable(specLibrary)
 write.csv(protpep,file=PEPPROTMAPPING)
+
 ```
 
