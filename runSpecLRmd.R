@@ -20,6 +20,7 @@ if (length(args)>=4){
   rmarkdown::render("specL.Rmd",output_format ="pdf_document", output_file = file.path(OUTPUTDIR, "SpecL.pdf"), clean=FALSE)
 }else{
   print("runSpecLRmd.R OUTPUTDIR INPUTDIR FASTA_FILE MIN_IONS MAX_IONS BLIB_FILTERED BLIB_REDUNDANT")
+  exit(1)
 }
 
 

@@ -4,9 +4,10 @@
 *.RData
 *.blib
 *.blib.filtered
-*.fasta
 *.pdf
 .DS_Store
 .idea
 *.md
 *.log
+res.*
+temp.*
