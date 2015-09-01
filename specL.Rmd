@@ -28,7 +28,7 @@ if(!exists("OUTPUTDIR")){
 
 SPECLIBRARYRDATA = file.path(OUTPUTDIR, "specLLibrary.RData")
 SWATH_LIBRARY <- file.path(OUTPUTDIR, "assay_library.tsv")
-PEPPROTMAPPING <- file.path(OUTPUTDIR, "pepprot.csv")
+PEPPROTMAPPING <- file.path(OUTPUTDIR, "pepprot.tsv")
 
 MZ_ERROR <- 0.05 # e.g for Q-Exactive
 FRAGMENTIONMZRANGE <- c(300,1250)
@@ -84,9 +84,9 @@ save(annotatedBlib, file=ANNOTATEDRDATA, compress=TRUE)
 ```{r generateLibrary}
 load(file.path(WORKDIR,"redundant.Rdata"))
 load(file.path(WORKDIR,"nonredundant.Rdata"))
-
 load(ANNOTATEDRDATA)
 print(length(annotatedBlib))
+
 specLibrary <- genSwathIonLib(data = annotatedBlib,
   data.fit = redundantBlib,
   max.mZ.Da.error = MZ_ERROR,
@@ -94,8 +94,8 @@ specLibrary <- genSwathIonLib(data = annotatedBlib,
   fragmentIonMzRange = FRAGMENTIONMZRANGE,
   fragmentIonRange = FRAGMENTIONRANGE,
   fragmentIonFUN = fragmentIonFunctionUpTo3)
-
 save(specLibrary , file = SPECLIBRARYRDATA )
+
 ```
 
 ## Summaries
@@ -114,9 +114,10 @@ write.spectronaut(specLibrary,file=SWATH_LIBRARY)
 ```
 
 ```{r writepepProt}
+slotNames(specLibrary)
 protpep = getProteinPeptideTable(specLibrary)
 dim(protpep)
-write.csv(protpep,file=PEPPROTMAPPING)
+write.table(protpep,file=PEPPROTMAPPING,row.names=FALSE,quote=FALSE)
 
 ```
 
