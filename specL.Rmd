@@ -117,7 +117,18 @@ write.spectronaut(specLibrary,file=SWATH_LIBRARY)
 slotNames(specLibrary)
 protpep = getProteinPeptideTable(specLibrary)
 dim(protpep)
+head(protpep)
 write.table(protpep,file=PEPPROTMAPPING,row.names=FALSE,quote=FALSE)
 
 ```
 
+```{r}
+library(prozor)
+head(protpep)
+dim(protpep)
+protpep = protpep[!protpep[,"proteinID"] == "NA",]
+tmp = prepareMatrix(protpep)
+res = greedy(tmp)
+
+
+```
