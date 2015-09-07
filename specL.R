@@ -1,4 +1,4 @@
-## ----prepareEnvLoadLibraries---------------------------------------------
+## ----prepareEnvLoadLibraries, echo=FALSE---------------------------------
 R.Version()
 library(specL)
 packageVersion('specL')
@@ -51,23 +51,18 @@ fragmentIonFunctionUpTo3 <- function (b, y) {
 }
 
 
-## ----readDatabases, eval=TRUE--------------------------------------------
+## ----readDatabases, eval=TRUE, echo=FALSE--------------------------------
 system.time( nonRedundantBlib <- read.bibliospec(NON_REDUNDANT) )
 system.time( redundantBlib <- read.bibliospec(REDUNDANT) )
 save(redundantBlib,file=file.path(WORKDIR,"redundant.Rdata"))
 save(nonRedundantBlib,file=file.path(WORKDIR,"nonredundant.Rdata"))
 
-## ----annotateDatabases,eval=TRUE-----------------------------------------
-system.time(annotatedBlib <- annotate.protein_id(nonRedundantBlib, file=FASTA_FILE))
-save(annotatedBlib, file=ANNOTATEDRDATA, compress=TRUE)
 
-## ----generateLibrary-----------------------------------------------------
+## ----generateLibrary,echo=FALSE------------------------------------------
 load(file.path(WORKDIR,"redundant.Rdata"))
 load(file.path(WORKDIR,"nonredundant.Rdata"))
-load(ANNOTATEDRDATA)
-print(length(annotatedBlib))
 
-specLibrary <- genSwathIonLib(data = annotatedBlib,
+specLibrary <- genSwathIonLib(data = nonRedundantBlib,
   data.fit = redundantBlib,
   max.mZ.Da.error = MZ_ERROR,
   topN = MAX_IONS,
@@ -78,17 +73,35 @@ save(specLibrary , file = SPECLIBRARYRDATA )
 
 
 ## ----printSummary,echo=TRUE----------------------------------------------
-load(SPECLIBRARYRDATA)
 MySum <- summary(specLibrary)
+
+
+## ----getPeptideProt------------------------------------------------------
+protpep = getProteinPeptideTable(specLibrary)
+
+
+## ----prozor, echo=FALSE, message=FALSE-----------------------------------
+
+library(prozor)
+fasta = read.fasta(file = FASTA_FILE, as.string = TRUE, seqtype="AA")
+protpepAnnot = annotatePeptides(protpep,fasta)
+write.table(protpepAnnot,file=PEPPROTMAPPING,quote = FALSE, row.names = FALSE)
+pepProtMatrix = prepareMatrix(protpepAnnot)
+
+protPepAssingments = greedy(pepProtMatrix)
+
+
+for(i in 1:length(specLibrary@ionlibrary)){
+  specl <- specLibrary@ionlibrary[[i]]
+  id <- paste(specl@peptideModSeq, specl@prec_z, sep="." )
+  tmp = protPepAssingments[[id]]
+  if(!is.null(tmp)){
+    specLibrary@ionlibrary[[i]]@proteinInformation = tmp
+  }
+}
 
 
 ## ----writeSpecnaut-------------------------------------------------------
 write.spectronaut(specLibrary,file=SWATH_LIBRARY)
-
-## ----writepepProt--------------------------------------------------------
-slotNames(specLibrary)
-protpep = getProteinPeptideTable(specLibrary)
-dim(protpep)
-write.table(protpep,file=PEPPROTMAPPING,row.names=FALSE,quote=FALSE)
 
 
