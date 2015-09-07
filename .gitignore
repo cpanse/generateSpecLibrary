@@ -11,3 +11,5 @@
 *.log
 res.*
 temp.*
+*.db
+*.db
