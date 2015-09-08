@@ -6,9 +6,12 @@ output: pdf_document
 ---
 
 ```{r insallLatestversions}
-library(devtools)
-install_github("wolski/prozor")
-install_github("fgcz/specL")
+#library(devtools)
+#install_github("wolski/prozor")
+#install_github("fgcz/specL")
+rm(list=ls())
+library(prozor)
+library(specL)
 ```
 
 ```{r prepareEnvLoadLibraries, echo=FALSE}
@@ -21,13 +24,14 @@ Define the parameter of the library generation
 
 ```{r setparameters}
 if(!exists("OUTPUTDIR")){
-  OUTPUTDIR = "res.12347"
-  WORKDIR = "temp.12347"
-  FASTA_FILE <- "fgcz_10090_20140715.fasta"
+  OUTPUTDIR = "res.22348"
+  WORKDIR = "temp.22348"
+  FASTA_FILE <- "temp.22348/fgcz_9606_d_20140506.fasta"
   MAX_IONS <- 6
   MIN_IONS <- 6
   BLIB_FILTERED <- "blib.blib.filtered.db"
   BLIB_REDUNDANT <- "blib.blib.db"
+  MZ_ERROR <- 0.8 # e.g for Q-Exactive
 } else{
   print("NOW I am starting to rock!")
 }
@@ -36,7 +40,6 @@ SPECLIBRARYRDATA = file.path(OUTPUTDIR, "specLLibrary.RData")
 SWATH_LIBRARY <- file.path(OUTPUTDIR, "assay_library.tsv")
 PEPPROTMAPPING <- file.path(OUTPUTDIR, "pepprot.tsv")
 
-MZ_ERROR <- 0.05 # e.g for Q-Exactive
 FRAGMENTIONMZRANGE <- c(300,1250)
 FRAGMENTIONRANGE <- c(MIN_IONS,200)
 
@@ -47,7 +50,8 @@ REDUNDANT <- file.path(WORKDIR,BLIB_REDUNDANT)
 cat("Set params SPECLIBRARYRDATA = ",SPECLIBRARYRDATA , "\n",
     " SWATH_LIBRARY = ", SWATH_LIBRARY, "\n", 
     " PEPPROTMAPPING = ",PEPPROTMAPPING , "\n",
-    " MZ_ERROR = ",MZ_ERROR, " FRAGMENTIONMZRANGE = ", FRAGMENTIONMZRANGE, "\n",
+    " MZ_ERROR = ",MZ_ERROR, "\n",
+    " FRAGMENTIONMZRANGE = ", FRAGMENTIONMZRANGE, "\n",
     " FRAGMENTIONRANGE = ",FRAGMENTIONRANGE, "\n",
     " ANNOTATEDRDATA = ",ANNOTATEDRDATA, "\n",
     " NON_REDUNDANT = ",NON_REDUNDANT , "\n",
@@ -56,7 +60,21 @@ cat("Set params SPECLIBRARYRDATA = ",SPECLIBRARYRDATA , "\n",
 
 ```
 
-Define which fragments to use.
+## Loading the libraries
+
+```{r readDatabases, eval=TRUE, echo=FALSE}
+system.time( nonRedundantBlib <- read.bibliospec(NON_REDUNDANT) )
+system.time( redundantBlib <- read.bibliospec(REDUNDANT) )
+save(redundantBlib, file=file.path(WORKDIR,"redundant.Rdata"))
+save(nonRedundantBlib, file=file.path(WORKDIR,"nonredundant.Rdata"))
+
+```
+
+Number of loaded unique precurosrs is `r length(nonRedundantBlib)`.
+
+## Generate Ion Libraries
+
+Define filtering function.
 
 ```{r defineFragmentFunction}
 fragmentIonFunctionUpTo3 <- function (b, y) {
@@ -72,21 +90,13 @@ fragmentIonFunctionUpTo3 <- function (b, y) {
 
 ```
 
-## Loading the libraries
-
-```{r readDatabases, eval=TRUE, echo=FALSE}
-system.time( nonRedundantBlib <- read.bibliospec(NON_REDUNDANT) )
-system.time( redundantBlib <- read.bibliospec(REDUNDANT) )
-save(redundantBlib,file=file.path(WORKDIR,"redundant.Rdata"))
-save(nonRedundantBlib,file=file.path(WORKDIR,"nonredundant.Rdata"))
-
-```
-
-## Generate Ion Libraries
-
 ```{r generateLibrary,echo=FALSE}
 load(file.path(WORKDIR,"redundant.Rdata"))
 load(file.path(WORKDIR,"nonredundant.Rdata"))
+
+length(nonRedundantBlib)
+length(redundantBlib)
+
 
 specLibrary <- genSwathIonLib(data = nonRedundantBlib,
   data.fit = redundantBlib,
@@ -97,7 +107,10 @@ specLibrary <- genSwathIonLib(data = nonRedundantBlib,
   fragmentIonFUN = fragmentIonFunctionUpTo3)
 save(specLibrary , file = SPECLIBRARYRDATA )
 
+
 ```
+
+The size of the generated ion library is :`r length(specLibrary@ionlibrary)`.
 
 ```{r printSummary,echo=TRUE}
 MySum <- summary(specLibrary)

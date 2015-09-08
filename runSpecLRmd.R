@@ -6,14 +6,14 @@ if (length(args)>=4){
   OUTPUTDIR <- args[1]
   WORKDIR <- args[2]
   FASTA_FILE <- args[3]
-  MIN_IONS <- as.integer(args[4])
-  MAX_IONS <- as.integer(args[5])
-  
-  BLIB_REDUNDANT <- args[6]
-  BLIB_FILTERED <- args[7]
+  MZ_ERROR <- as.integer(args[4]) 
+  MIN_IONS <- as.integer(args[5])
+  MAX_IONS <- as.integer(args[6])
+  BLIB_REDUNDANT <- args[7]
+  BLIB_FILTERED <- args[8]
   cat("Set params OUTPUTDIR = ",OUTPUTDIR ,
       " WORKDIR = ", WORKDIR,
-      " FASTA_FILE = ",FASTA_FILE ,
+      " FASTA_FILE = ",FASTA_FILE , " MZ_ERROR = ", MZ_ERROR,
       " MAX_IONS = ",MAX_IONS, " MIN_IONS = ", MIN_IONS," BLIB_REDUNDANT = ",
       BLIB_REDUNDANT, " BLIB_FILTERED = ",BLIB_FILTERED, "\n"   )
   #source("specL.R")
