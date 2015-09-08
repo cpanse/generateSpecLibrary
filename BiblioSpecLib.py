@@ -65,7 +65,7 @@ class ApplicationBase:
 
     def logResults(self):
         self.logger.info("{} : {}".format(self.APP_NAME,self.RESULT.out))
-        self.logger.error("{} : {}".format(self.APP_NAME, self.RESULT.err))
+        #self.logger.error("{} : {}".format(self.APP_NAME, self.RESULT.err))
 
     def run(self):
         pass
