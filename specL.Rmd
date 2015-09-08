@@ -5,7 +5,7 @@ date: "29 Jul 2015"
 output: pdf_document
 ---
 
-```{r prepareEnvLoadLibraries}
+```{r prepareEnvLoadLibraries, echo=FALSE}
 R.Version()
 library(specL)
 packageVersion('specL')
@@ -28,7 +28,7 @@ if(!exists("OUTPUTDIR")){
 
 SPECLIBRARYRDATA = file.path(OUTPUTDIR, "specLLibrary.RData")
 SWATH_LIBRARY <- file.path(OUTPUTDIR, "assay_library.tsv")
-PEPPROTMAPPING <- file.path(OUTPUTDIR, "pepprot.csv")
+PEPPROTMAPPING <- file.path(OUTPUTDIR, "pepprot.tsv")
 
 MZ_ERROR <- 0.05 # e.g for Q-Exactive
 FRAGMENTIONMZRANGE <- c(300,1250)
@@ -67,55 +67,70 @@ fragmentIonFunctionUpTo3 <- function (b, y) {
 
 ## Loading the libraries
 
-```{r readDatabases, eval=TRUE}
+```{r readDatabases, eval=TRUE, echo=FALSE}
 system.time( nonRedundantBlib <- read.bibliospec(NON_REDUNDANT) )
 system.time( redundantBlib <- read.bibliospec(REDUNDANT) )
 save(redundantBlib,file=file.path(WORKDIR,"redundant.Rdata"))
 save(nonRedundantBlib,file=file.path(WORKDIR,"nonredundant.Rdata"))
-```
-## Annotate the peptides with protein id's
 
-```{r annotateDatabases,eval=TRUE}
-system.time(annotatedBlib <- annotate.protein_id(nonRedundantBlib, file=FASTA_FILE))
-save(annotatedBlib, file=ANNOTATEDRDATA, compress=TRUE)
 ```
 
-```{r generateLibrary}
+## Generate Ion Libraries
+
+```{r generateLibrary,echo=FALSE}
 load(file.path(WORKDIR,"redundant.Rdata"))
 load(file.path(WORKDIR,"nonredundant.Rdata"))
 
-load(ANNOTATEDRDATA)
-print(length(annotatedBlib))
-specLibrary <- genSwathIonLib(data = annotatedBlib,
+specLibrary <- genSwathIonLib(data = nonRedundantBlib,
   data.fit = redundantBlib,
   max.mZ.Da.error = MZ_ERROR,
   topN = MAX_IONS,
   fragmentIonMzRange = FRAGMENTIONMZRANGE,
   fragmentIonRange = FRAGMENTIONRANGE,
   fragmentIonFUN = fragmentIonFunctionUpTo3)
-
 save(specLibrary , file = SPECLIBRARYRDATA )
+
 ```
 
-## Summaries
-
 ```{r printSummary,echo=TRUE}
-load(SPECLIBRARYRDATA)
 MySum <- summary(specLibrary)
 
 ```
 
-## Write output
+## Assign peptide spectrum matches to proteins using prozor
+
+```{r getPeptideProt}
+protpep = getProteinPeptideTable(specLibrary)
+
+```
+
+```{r prozor, echo=FALSE, message=FALSE }
+
+library(prozor)
+fasta = read.fasta(file = FASTA_FILE, as.string = TRUE, seqtype="AA")
+protpepAnnot = annotatePeptides(protpep,fasta)
+write.table(protpepAnnot,file=PEPPROTMAPPING,quote = FALSE, row.names = FALSE)
+pepProtMatrix = prepareMatrix(protpepAnnot)
+
+protPepAssingments = greedy(pepProtMatrix)
+
+for(i in 1:length(specLibrary@ionlibrary)){
+  specl <- specLibrary@ionlibrary[[i]]
+  id <- paste(specl@peptideModSeq, specl@prec_z, sep="." )
+  tmp = protPepAssingments[[id]]
+  if(!is.null(tmp)){
+    specLibrary@ionlibrary[[i]]@proteinInformation = tmp
+  }
+}
+
+```
+
+The `r dim(pepProtMatrix)[1]` peptide precursors matched `r dim(pepProtMatrix)[2]` protein sequences.
+The minimal protein set explaining these precursors has a size of `r length(unique(unlist(protPepAssingments)))` proteins.
 
 
 ```{r writeSpecnaut}
 write.spectronaut(specLibrary,file=SWATH_LIBRARY)
 ```
 
-```{r writepepProt}
-protpep = getProteinPeptideTable(specLibrary)
-dim(protpep)
-write.csv(protpep,file=PEPPROTMAPPING)
-
-```
 

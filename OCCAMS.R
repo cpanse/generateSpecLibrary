@@ -34,12 +34,7 @@ image(corProt[1:100,1:100])
 dim(pepProt)
 xx<-sumRows(pepProt)
 
-removeZeroRows <-function(x){
-  tmp <- rowSums(x)
-  cat("sum" , sum(tmp == 0) )
-  y = x[tmp > 0,, drop=FALSE ]
-  return(y)
-}
+
 
 
 occam <- function(pepprot, ncolX = ncol(pepprot)){
