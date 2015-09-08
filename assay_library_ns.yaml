@@ -1,0 +1,28 @@
+jobname : Assay Library Generation
+bfabric_external_job_id : 22348
+minN : 5
+maxN : 6
+input_mascot_dat_file :
+  - file:///usr/local/mascot/data/20150828/F223227.dat
+  - file:///usr/local/mascot/data/20150828/F223226.dat
+  - file:///usr/local/mascot/data/20150828/F223222.dat
+  - file:///usr/local/mascot/data/20150828/F223230.dat
+  - file:///usr/local/mascot/data/20150828/F223219.dat
+  - file:///usr/local/mascot/data/20150828/F223244.dat
+  - file:///usr/local/mascot/data/20150828/F223234.dat
+  - file:///usr/local/mascot/data/20150828/F223245.dat
+  - file:///usr/local/mascot/data/20150828/F223223.dat
+  - file:///usr/local/mascot/data/20150828/F223229.dat
+  - file:///usr/local/mascot/data/20150828/F223221.dat
+  - file:///usr/local/mascot/data/20150828/F223228.dat
+  - file:///usr/local/mascot/data/20150828/F223225.dat
+  - file:///usr/local/mascot/data/20150828/F223224.dat
+  - file:///usr/local/mascot/data/20150828/F223220.dat
+  - file:///usr/local/mascot/data/20150828/F223218.dat
+  - file:///usr/local/mascot/data/20150828/F223249.dat
+  - file:///usr/local/mascot/data/20150828/F223252.dat
+  - file:///usr/local/mascot/data/20150828/F223237.dat
+  - file:///usr/local/mascot/data/20150828/F223235.dat
+  - file:///usr/local/mascot/data/20150828/F223232.dat
+output_zip : file:///home/wolski/temp/22348.zip
+mascot_database_location : /usr/local/mascot/sequence/
