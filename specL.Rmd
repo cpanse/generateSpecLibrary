@@ -133,5 +133,3 @@ The minimal protein set explaining these precursors has a size of `r length(uniq
 ```{r writeSpecnaut}
 write.spectronaut(specLibrary,file=SWATH_LIBRARY)
 ```
-
-
