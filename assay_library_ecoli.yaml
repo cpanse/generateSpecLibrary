@@ -1,0 +1,8 @@
+jobname : Assay Library Generation
+bfabric_external_job_id : 12348
+minN : 5
+maxN : 6
+input_mascot_dat_file :
+  - file:///usr/local/mascot/data/20140822/F205802.dat
+output_zip : file:///home/wolski/temp/12348.zip
+mascot_database_location : /usr/local/mascot/sequence/

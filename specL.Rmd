@@ -49,7 +49,6 @@ cat("Set params SPECLIBRARYRDATA = ",SPECLIBRARYRDATA , "\n",
 
 ```
 
-
 Define which fragments to use.
 
 ```{r defineFragmentFunction}

@@ -33,6 +33,7 @@ class LibraryGenerationParameters:
                 self.logger.error("dat file can't be found " + file)
                 self.RETURN_VALUE = 1
 
+    ## TODO: rename
     def write_result_yaml(self):
         self.parameters["processed"] = "true"
         with open(os.path.join(self.LOCAL_RES_DIR, 'data.yml'), 'w') as outfile:
