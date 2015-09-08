@@ -52,16 +52,22 @@ class LibraryGenerationParameters:
 
         if not os.path.exists(self.LOCAL_WORK_DIR):
             os.makedirs(self.LOCAL_WORK_DIR)
+        else:
+            BiblioSpecLib.remove_files_from_folder(self.LOCAL_WORK_DIR)
+
         self.LOCAL_RES_DIR = "{}.{}".format(self.LOCAL_RES_DIR, self.JOB_ID)
         if not os.path.exists(self.LOCAL_RES_DIR):
             os.makedirs(self.LOCAL_RES_DIR)
-        self.logger = BiblioSpecLib.setUpLogging(os.path.join(self.LOCAL_RES_DIR, "fgcz_test_yaml.log"))
+        else:
+            BiblioSpecLib.remove_files_from_folder(self.LOCAL_RES_DIR)
 
+        self.logger = BiblioSpecLib.setUpLogging(os.path.join(self.LOCAL_RES_DIR, "fgcz_test_yaml.log"))
         self.OUT_ZIP = replaceUriHeader(self.parameters["output_zip"])
         self.LIST_OF_DAT_FILES = self.parameters["input_mascot_dat_file"]
         self.MASCOT_DATABASE_LOCATION = self.parameters['mascot_database_location']
         self.MIN_N = self.parameters['minN']
         self.MAX_N = self.parameters['maxN']
+        self.MZ_ERROR = self.parameters['mzError']
         self.check_dat_files()
 
 
@@ -83,7 +89,7 @@ if __name__ == "__main__":
                                        lgp.LOCAL_RES_DIR,
                                        lgp.LOCAL_WORK_DIR,
                                        lgp.MASCOT_DATABASE_LOCATION,
-                                       lgp.MIN_N, lgp.MAX_N)
+                                       lgp.MIN_N, lgp.MAX_N, lgp.MZ_ERROR)
         blsl.run()
 
     lgp.write_result_yaml()
