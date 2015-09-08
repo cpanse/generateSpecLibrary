@@ -142,7 +142,7 @@ class BlibBuild(ApplicationBase):
             raise SystemError("Return code of Command {} is not as expected : {}".format(blib_command, self.RESULT.return_code))
 
     def run_specL(self, fasta_file, minN, maxN, redundant_blib, filtered_blib ):
-        specL_command = "runSpecLRmd.R {0} {1} {2} {3} {4} {5}".format(self.RESULT_DIR, self.WORK_DIR, fasta_file,
+        specL_command = "./runSpecLRmd.R {0} {1} {2} {3} {4} {5} {6}".format(self.RESULT_DIR, self.WORK_DIR, fasta_file,
                                                                        minN, maxN, redundant_blib, filtered_blib)
         self.executeCommand(specL_command)
         if self.RESULT.return_code != 0:
@@ -156,7 +156,7 @@ class BlibBuild(ApplicationBase):
         filtered_blib_file = os.path.join(self.WORK_DIR,  self.BLIB_FILE_FILTERED)
         self.run_blib_filter( redundant_blib_file, filtered_blib_file)
         self.logResults()
-        self.run_specL(self.MASCOT_DATABASE, self.MIN_N, self.MAX_N, redundant_blib_file, filtered_blib_file)
+        self.run_specL(self.MASCOT_DATABASE, self.MIN_N, self.MAX_N, self.BLIB_FILE_REDUNDANT, self.BLIB_FILE_FILTERED)
         self.logResults()
         return self.RESULT.return_code
 
