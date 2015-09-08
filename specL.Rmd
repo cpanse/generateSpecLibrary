@@ -5,6 +5,12 @@ date: "29 Jul 2015"
 output: pdf_document
 ---
 
+```{r insallLatestversions}
+library(devtools)
+install_github("wolski/prozor")
+install_github("fgcz/specL")
+```
+
 ```{r prepareEnvLoadLibraries, echo=FALSE}
 R.Version()
 library(specL)
@@ -45,7 +51,8 @@ cat("Set params SPECLIBRARYRDATA = ",SPECLIBRARYRDATA , "\n",
     " FRAGMENTIONRANGE = ",FRAGMENTIONRANGE, "\n",
     " ANNOTATEDRDATA = ",ANNOTATEDRDATA, "\n",
     " NON_REDUNDANT = ",NON_REDUNDANT , "\n",
-    " REDUNDANT = ",REDUNDANT, "\n"   )
+    " REDUNDANT = ",REDUNDANT, "\n" ,  
+    " FASTA_FILE = ", FASTA_FILE, "\n")
 
 ```
 
