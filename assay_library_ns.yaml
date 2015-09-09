@@ -2,6 +2,7 @@ jobname : Assay Library Generation
 bfabric_external_job_id : 22348
 minN : 5
 maxN : 6
+mzError : 0.8
 input_mascot_dat_file :
   - file:///usr/local/mascot/data/20150828/F223227.dat
   - file:///usr/local/mascot/data/20150828/F223226.dat

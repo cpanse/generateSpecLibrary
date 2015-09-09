@@ -11,6 +11,16 @@ import sys
 
 ProcessValues = namedtuple("ProcessValues", "return_code out err")
 
+def remove_files_from_folder(folder):
+    for the_file in os.listdir(folder):
+        file_path = os.path.join(folder, the_file)
+        try:
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+        except Exception, e:
+            print e
+
+
 def find_file(name, path):
     for root, dirs, files in os.walk(path):
         if name in files:
@@ -103,7 +113,7 @@ class BlibBuild(ApplicationBase):
 
     def __init__(self, mascot_dat_files,
                  result_dir, work_dir, mascot_database_location,
-                 minN, maxN):
+                 minN, maxN, mzError):
         ApplicationBase.__init__(self, "BlibBuild", result_dir)
         self.mascot_dat_files = mascot_dat_files
         self.RESULT_DIR = result_dir
@@ -111,6 +121,7 @@ class BlibBuild(ApplicationBase):
         self.MASCOT_DATABASE_LOCATION = mascot_database_location
         self.MIN_N = minN
         self.MAX_N = maxN
+        self.MZ_ERROR = mzError
 
     def get_mascot_databases(self):
         databases = []
@@ -141,9 +152,9 @@ class BlibBuild(ApplicationBase):
         if self.RESULT.return_code != 0:
             raise SystemError("Return code of Command {} is not as expected : {}".format(blib_command, self.RESULT.return_code))
 
-    def run_specL(self, fasta_file, minN, maxN, redundant_blib, filtered_blib ):
-        specL_command = "./runSpecLRmd.R {0} {1} {2} {3} {4} {5} {6}".format(self.RESULT_DIR, self.WORK_DIR, fasta_file,
-                                                                       minN, maxN, redundant_blib, filtered_blib)
+    def run_specL(self, fasta_file, mzError, minN, maxN, redundant_blib, filtered_blib ):
+        specL_command = "./runSpecLRmd.R {0} {1} {2} {3} {4} {5} {6} {7}".format(self.RESULT_DIR, self.WORK_DIR, fasta_file,
+                                                                       mzError, minN, maxN, redundant_blib, filtered_blib)
         self.executeCommand(specL_command)
         if self.RESULT.return_code != 0:
             raise SystemError("Return code of Command {} is not as expected : {}".format(specL_command, self.RESULT.return_code))
@@ -156,7 +167,7 @@ class BlibBuild(ApplicationBase):
         filtered_blib_file = os.path.join(self.WORK_DIR,  self.BLIB_FILE_FILTERED)
         self.run_blib_filter( redundant_blib_file, filtered_blib_file)
         self.logResults()
-        self.run_specL(self.MASCOT_DATABASE, self.MIN_N, self.MAX_N, self.BLIB_FILE_REDUNDANT, self.BLIB_FILE_FILTERED)
+        self.run_specL(self.MASCOT_DATABASE, self.MZ_ERROR, self.MIN_N, self.MAX_N, self.BLIB_FILE_REDUNDANT, self.BLIB_FILE_FILTERED)
         self.logResults()
         return self.RESULT.return_code
 

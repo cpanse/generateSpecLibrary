@@ -1,1 +1,1 @@
-./runSpecLRmd.R res.12345 temp.12345 /usr/local/mascot/sequence/fgcz_10090/current/fgcz_10090_20140715.fasta 6 6 blib.blib.db blib.blib.filtered.db
+./runSpecLRmd.R ./res.22348 ./temp.22348 /usr/local/mascot/sequence/fgcz_9606_d/current/fgcz_9606_d_20140506.fasta 0.8 5 6 blib.blib.db blib.blib.filtered.db
