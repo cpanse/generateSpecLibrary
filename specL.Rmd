@@ -128,18 +128,17 @@ protpep = getProteinPeptideTable(specLibrary)
 
 library(prozor)
 fasta = read.fasta(file = FASTA_FILE, as.string = TRUE, seqtype="AA")
+spid <-grep("sp\\|",names(fasta))
+fasta = fasta[spid]
+length(fasta)
 protpepAnnot = annotatePeptides(protpep,fasta)
-dim(protpepAnnot)
-tmp = grep("sp\\|",protpepAnnot$proteinID )
-length(tmp)
-protpepAnnot = protpepAnnot[tmp,]
-dim(protpepAnnot)
 
 write.table(protpepAnnot,file=PEPPROTMAPPING,quote = FALSE, row.names = FALSE)
 
 pepProtMatrix = prepareMatrix(protpepAnnot)
 dim(pepProtMatrix)
 protPepAssingments = greedy(pepProtMatrix)
+protPepAssingments[1:10]
 
 for(i in 1:length(specLibrary@ionlibrary)){
   specl <- specLibrary@ionlibrary[[i]]
