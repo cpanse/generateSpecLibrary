@@ -1,51 +1,46 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <executable>
-    <name>fgcz_scaffold.bash</name>
+    <name>dia_library_generation</name>
     <context>APPLICATION</context>
-    <description>This is the 2015 generic scaffold application interface between B-Fabric and ScaffoldBatch4.
-    see also:
-    https://github.com/cpanse/bfabric-app/tree/fgcz/apps/scaffold and http://fgcz-intranet.uzh.ch/tiki-index.php?page=scaffold. 
+    <description>
+    Generates DIA assay libraries using Bibliospec, specL and prozor.
     </description>
-    <program>/usr/local/fgcz/proteomics/bin/fgcz_scaffold.bash</program>
+    <program>/scratch/wolski/generateSpecLibrary/fgcz_test_yaml.py</program>
     <valid>true</valid>
     <parameter>
-        <modifiable>true</modifiable>
-        <description>inidcates if x!tandem should be used for PSM confirmation.</description>
-        <key>xtandem</key>
-        <label>use x!tandem</label>
-        <required>true</required>
-        <type>boolean</type>
-        <value>false</value>
-    </parameter>
-    <parameter>
-        <modifiable>true</modifiable>
-        <description>MudPIT (Multidimensional Protein Identification Technology) combines multiple mascot result files into a single protein list. 
-	If not selected, each input resource (mascot result file) is treated as an individual BiologicalSample.</description>
-        <key>mudpit</key>
-        <label>use MudPIT</label>
-        <required>true</required>
-        <type>boolean</type>
-        <value>false</value>
-    </parameter>
-    <parameter>
-        <modifiable>true</modifiable>
-        <description>Using the GeLC-MS option all input resource are handled as a single BiologicalSample. 
-	This option is usually used when the mudpit option is not selected.</description>
-        <key>gelcms</key>
-        <label>use GeLC-MS configuration</label>
-        <required>true</required>
-        <type>boolean</type>
-        <value>true</value>
-    </parameter>
-    <parameter>
         <modifiable>false</modifiable>
-        <description>This command is specific to Scaffold Q+. 
-	These commands specify the quantitative model type, name, and purity correction for the labels. 
-	Possible values are: 'iTRAQ 4-Plex' and 'iTRAQ 8-Plex</description>
-        <key>qmodel</key>
-        <label>QuantitativeModel</label>
-        <required>false</required>
+        <description>databases default location.</description>
+        <key>mascot_database_location</key>
+        <label>fasta databases</label>
+        <required>true</required>
         <type>string</type>
-        <value>None</value>
+        <value>/usr/local/mascot/sequence/</value>
+    </parameter>
+    <parameter>
+        <modifiable>true</modifiable>
+        <description>min number of top transitions</description>
+        <key>minN</key>
+        <label>min number</label>
+        <required>true</required>
+        <type>int</type>
+        <value>5</value>
+    </parameter>
+    <parameter>
+        <modifiable>true</modifiable>
+        <description>max number of top transitions</description>
+        <key>maxN</key>
+        <label>max number</label>
+        <required>true</required>
+        <type>integer</type>
+        <value>6</value>
+    </parameter>
+    <parameter>
+        <modifiable>true</modifiable>
+        <description>measurement error in Da</description>
+        <key>mzError</key>
+        <label>mzErrorDa</label>
+        <required>true</required>
+        <type>float</type>
+        <value>0.05</value>
     </parameter>
 </executable>
