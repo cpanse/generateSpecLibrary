@@ -15,7 +15,7 @@ application:
     mzError: '0.8'
   protocol: scp
 job_configuration:
-  executable: /scratch/wolski/generateSpecLibrary/fgcz_AssayLibraryGeneration.py
+  executable: /scratch/wolski/generateSpecLibrary/fgcz_test_yaml.py
   external_job_id: 46331
   input:
     mascot_dat:
@@ -63,4 +63,3 @@ job_configuration:
     url: /home/bfabric/sgeworker/logs/workunitid-135497_resourceid-204439.out
   workunit_id: 135497
   workunit_url: http://fgcz-bfabric.uzh.ch/bfabric/userlab/show-workunit.html?workunitId=135497
-
