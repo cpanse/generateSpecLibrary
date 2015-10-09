@@ -131,8 +131,12 @@ class BlibBuild(ApplicationBase):
             databases.append(res)
         databases = list(set(databases))
         if len(databases) > 1:
-            self.RESULT.return_code = 1
-            error = "Dat files where searched against various databases : {}".format(databases)
+            warning = "Dat files where searched against various databases : {}".format(databases)
+            self.RESULT = ProcessValues(0, warning, "")
+            self.logger.warning(warning)
+        if len(databases) == 0:
+            error = "No database found!"
+            self.RESULT = ProcessValues(1, "", error)
             self.logger.error(error)
             raise SystemError(error)
         return databases[0]

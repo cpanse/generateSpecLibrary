@@ -32,9 +32,9 @@ Library generation is run with the following parameters:
 
 ```{r setparameters, echo=FALSE}
 if(!exists("OUTPUTDIR")){
-  OUTPUTDIR = "res.22348"
-  WORKDIR = "temp.22348"
-  FASTA_FILE <- "temp.22348/fgcz_9606_d_20140506.fasta"
+  OUTPUTDIR = "res.46573"
+  WORKDIR = "temp.46573"
+  FASTA_FILE <- "/usr/local/mascot/sequence/fgcz_9606_d/current/fgcz_9606_d_20140506.fasta"
   MAX_IONS <- 6
   MIN_IONS <- 6
   BLIB_FILTERED <- "blib.blib.filtered.db"
@@ -55,7 +55,7 @@ ANNOTATEDRDATA <- file.path(WORKDIR,"Annotated.RData")
 NON_REDUNDANT <- file.path(WORKDIR,BLIB_FILTERED)
 REDUNDANT <- file.path(WORKDIR,BLIB_REDUNDANT)
 
-if(FALSE){
+if(TRUE){
 cat("Set params SPECLIBRARYRDATA = ",SPECLIBRARYRDATA , "\n",
     " SWATH_LIBRARY = ", SWATH_LIBRARY, "\n", 
     " PEPPROTMAPPING = ",PEPPROTMAPPING , "\n",
@@ -76,8 +76,7 @@ cat(" MZ_ERROR = ",MZ_ERROR, "\n",
 
 ```
 
-
-```{r readDatabases, eval=FALSE, echo=FALSE, message=FALSE}
+```{r readDatabases, eval=TRUE, echo=FALSE, message=FALSE}
 system.time( nonRedundantBlib <- read.bibliospec(NON_REDUNDANT) )
 system.time( redundantBlib <- read.bibliospec(REDUNDANT) )
 save(redundantBlib, file=file.path(WORKDIR,"redundant.Rdata"))
@@ -108,7 +107,7 @@ load(file.path(WORKDIR,"nonredundant.Rdata"))
 #xx <- annotate.protein_id(nonRedundantBlib,file=FASTA_FILE)
 ```
 
-```{r,echo=FALSE, message=FALSE, eval=FALSE}
+```{r,echo=FALSE, message=FALSE, eval=TRUE}
 specLibrary <- genSwathIonLib(data = nonRedundantBlib,
   data.fit = redundantBlib,
   max.mZ.Da.error = MZ_ERROR,
@@ -139,7 +138,7 @@ protpep = getProteinPeptideTable(specLibrary)
 
 ```
 
-```{r prozor, echo=FALSE, message=FALSE, eval=FALSE }
+```{r prozor, echo=FALSE, message=FALSE, eval=TRUE }
 library(prozor)
 fasta = read.fasta(file = FASTA_FILE, as.string = TRUE, seqtype="AA")
 spid <-grep("sp\\|",names(fasta))
