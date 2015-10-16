@@ -1,15 +1,10 @@
-import subprocess
+from cakeme.applibase import ApplicationBase
+from cakeme.applibase import ProcessValues
 import os
-import shlex
 import shutil
-from collections import namedtuple
-import logging
 import cakeme
 import re
 import sys
-
-ProcessValues = namedtuple("ProcessValues", "return_code out err")
-
 
 def get_db_from_mascot_dat(file):
     with open(file, "r") as f:
@@ -19,46 +14,6 @@ def get_db_from_mascot_dat(file):
                 found = re.search('^release=(.+\.fasta$)',line)
                 if found:
                     return found.group(1)
-
-
-def setUpLogging(destination='/var/tmp/myapp.log'):
-    logger = logging.getLogger('myapp')
-    hdlr = logging.FileHandler(destination)
-    formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-    hdlr.setFormatter(formatter)
-    logger.addHandler(hdlr)
-    logger.setLevel(logging.INFO)
-    return logger
-
-
-class ApplicationBase:
-    APP_NAME = ""
-    LOGFILE = ""
-    RESULT = ProcessValues(-1, "", "")
-
-    def __init__(self, app_name, result_directory):
-        self.logger = setUpLogging(os.path.join(result_directory,"{}.{}".format(app_name,"log")))
-        self.APP_NAME = app_name
-
-    def executeCommand(self,command):
-        self.logger.info("Running {}".format(command))
-        cmd = shlex.split(command)
-        try:
-            process = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1)
-            out, err = process.communicate()
-            self.RESULT = ProcessValues(process.returncode, out, err)
-            return self.RESULT
-        except OSError as e:
-            self.logger.error("test {}".format(str(e)))
-
-
-
-    def logResults(self):
-        self.logger.info("{} : {}".format(self.APP_NAME,self.RESULT.out))
-        #self.logger.error("{} : {}".format(self.APP_NAME, self.RESULT.err))
-
-    def run(self):
-        pass
 
 class SCPCopy(ApplicationBase):
     def copyDatFiles(self, source_computer, files2move, destination_directory):
@@ -111,8 +66,12 @@ class BlibBuild(ApplicationBase):
             databases.append(res)
         databases = list(set(databases))
         if len(databases) > 1:
-            self.RESULT.return_code = 1
-            error = "Dat files where searched against various databases : {}".format(databases)
+            warning = "Dat files where searched against various databases : {}".format(databases)
+            self.RESULT = ProcessValues(0, warning, "")
+            self.logger.warning(warning)
+        if len(databases) == 0:
+            error = "No database found!"
+            self.RESULT = ProcessValues(1, "", error)
             self.logger.error(error)
             raise SystemError(error)
         return databases[0]

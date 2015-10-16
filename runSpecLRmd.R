@@ -1,7 +1,7 @@
 #! /usr/bin/Rscript
 
 args <- commandArgs(TRUE)
-
+print(args)
 if (length(args)>=4){
   OUTPUTDIR <- args[1]
   WORKDIR <- args[2]
@@ -15,11 +15,11 @@ if (length(args)>=4){
       " WORKDIR = ", WORKDIR,
       " FASTA_FILE = ",FASTA_FILE , " MZ_ERROR = ", MZ_ERROR,
       " MAX_IONS = ",MAX_IONS, " MIN_IONS = ", MIN_IONS," BLIB_REDUNDANT = ",
-      BLIB_REDUNDANT, " BLIB_FILTERED = ",BLIB_FILTERED, "\n"   )
-  #source("specL.R")
+      BLIB_REDUNDANT, " BLIB_FILTERED = ",BLIB_FILTERED, "\n")
+
   rmarkdown::render("specL.Rmd",output_format ="pdf_document", output_file = file.path(OUTPUTDIR, "SpecL.pdf"), clean=FALSE)
 }else{
   print("runSpecLRmd.R OUTPUTDIR INPUTDIR FASTA_FILE MIN_IONS MAX_IONS BLIB_FILTERED BLIB_REDUNDANT")
-  exit(1)
+  quit(status=1)
 }
 
