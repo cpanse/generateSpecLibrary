@@ -1,30 +1,15 @@
-__author__ = 'witold'
 import subprocess
 import os
 import shlex
 import shutil
 from collections import namedtuple
 import logging
-import zipfile
+import cakeme
 import re
 import sys
 
 ProcessValues = namedtuple("ProcessValues", "return_code out err")
 
-def remove_files_from_folder(folder):
-    for the_file in os.listdir(folder):
-        file_path = os.path.join(folder, the_file)
-        try:
-            if os.path.isfile(file_path):
-                os.unlink(file_path)
-        except Exception, e:
-            print e
-
-
-def find_file(name, path):
-    for root, dirs, files in os.walk(path):
-        if name in files:
-            return os.path.join(root, name)
 
 def get_db_from_mascot_dat(file):
     with open(file, "r") as f:
@@ -35,6 +20,7 @@ def get_db_from_mascot_dat(file):
                 if found:
                     return found.group(1)
 
+
 def setUpLogging(destination='/var/tmp/myapp.log'):
     logger = logging.getLogger('myapp')
     hdlr = logging.FileHandler(destination)
@@ -44,12 +30,6 @@ def setUpLogging(destination='/var/tmp/myapp.log'):
     logger.setLevel(logging.INFO)
     return logger
 
-def zip_dir(path, out_zip):
-    ziph = zipfile.ZipFile(out_zip, 'w')
-    for root, dirs, files in os.walk(path):
-        for file in files:
-            ziph.write(os.path.join(root, file))
-    ziph.close()
 
 class ApplicationBase:
     APP_NAME = ""
@@ -127,7 +107,7 @@ class BlibBuild(ApplicationBase):
         databases = []
         for datfile in self.mascot_dat_files:
             res = get_db_from_mascot_dat(datfile)
-            res = find_file(res, self.MASCOT_DATABASE_LOCATION)
+            res = cakeme.fileutils.find_file(res, self.MASCOT_DATABASE_LOCATION)
             databases.append(res)
         databases = list(set(databases))
         if len(databases) > 1:
@@ -176,5 +156,5 @@ if __name__ == "__main__":
     datfile = sys.argv[1]
     res = get_db_from_mascot_dat(datfile)
     print res
-    res = find_file(res, "/usr/local/mascot/sequence/")
+    res = cakeme.fileutils.find_file(res, "/usr/local/mascot/sequence/")
     print res

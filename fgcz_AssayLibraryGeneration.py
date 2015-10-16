@@ -5,6 +5,7 @@ import os
 import os.path
 import yaml
 import re
+import cakeme
 
 import BiblioSpecLib
 
@@ -118,12 +119,12 @@ class LibraryGenerationParametersNEW:
         if not os.path.exists(self.LOCAL_WORK_DIR):
             os.makedirs(self.LOCAL_WORK_DIR)
         else:
-            BiblioSpecLib.remove_files_from_folder(self.LOCAL_WORK_DIR)
+            cakeme.fileutils.remove_files_from_folder(self.LOCAL_WORK_DIR)
         self.LOCAL_RES_DIR = "{}.{}".format(self.LOCAL_RES_DIR, self.JOB_ID)
         if not os.path.exists(self.LOCAL_RES_DIR):
             os.makedirs(self.LOCAL_RES_DIR)
         else:
-            BiblioSpecLib.remove_files_from_folder(self.LOCAL_RES_DIR)
+            cakeme.fileutils.remove_files_from_folder(self.LOCAL_RES_DIR)
         self.logger = BiblioSpecLib.setUpLogging(os.path.join(self.LOCAL_RES_DIR, "fgcz_test_yaml.log"))
         self.app_parameters = self.parameters["application"]
         self.OUT_ZIP = replaceUriHeader2(self.app_parameters["output"][0])
@@ -145,7 +146,6 @@ if __name__ == "__main__":
         assay_library_yaml = sys.argv[1]
 
     lgp = LibraryGenerationParametersNEW()
-    #lgp = LibraryGenerationParameters()
     lgp.set_up(assay_library_yaml)
 
     print lgp.OUT_ZIP, lgp.LOCAL_WORK_DIR, lgp.JOB_ID, lgp.LIST_OF_DAT_FILES, lgp.RETURN_CODE
