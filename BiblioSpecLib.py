@@ -1,7 +1,8 @@
 from cakeme.applibase import ApplicationBase
 from cakeme.applibase import ProcessValues
+import cakeme.fileutils
 import os
-import shutil
+#import shutil
 import cakeme
 import re
 import sys
@@ -15,23 +16,6 @@ def get_db_from_mascot_dat(file):
                 if found:
                     return found.group(1)
 
-class SCPCopy(ApplicationBase):
-    def copyDatFiles(self, source_computer, files2move, destination_directory):
-        if os.path.exists(destination_directory):
-            shutil.rmtree(destination_directory)
-
-        if not os.path.exists(destination_directory):
-            os.makedirs(destination_directory)
-
-        for dat_file in files2move:
-            dat_file.strip()
-            if dat_file[0] != "#":
-                scp_command = "scp {}:{} {}".format(source_computer,
-                                               dat_file.strip(),
-                                               os.path.join(destination_directory,
-                                               os.path.basename(dat_file)))
-                self.logger.info("Run : {}".format(scp_command))
-                self.executeCommand(scp_command)
 
 class BlibBuild(ApplicationBase):
     PATH_2_BIBLIOSPEC = "/home/wolski/bin/BiblioSpec"
@@ -47,12 +31,15 @@ class BlibBuild(ApplicationBase):
     mascot_dat_files = []
 
     def __init__(self, mascot_dat_files,
-                 result_dir, work_dir, mascot_database_location,
+                 result_dir, work_dir, output_zip, mascot_database_location,
                  minN, maxN, mzError):
         ApplicationBase.__init__(self, "BlibBuild", result_dir)
         self.mascot_dat_files = mascot_dat_files
+
         self.RESULT_DIR = result_dir
         self.WORK_DIR = work_dir
+        self.OUT_ZIP = output_zip
+
         self.MASCOT_DATABASE_LOCATION = mascot_database_location
         self.MIN_N = minN
         self.MAX_N = maxN
@@ -98,6 +85,11 @@ class BlibBuild(ApplicationBase):
         if self.RESULT.return_code != 0:
             raise SystemError("Return code of Command {} is not as expected : {}".format(specL_command, self.RESULT.return_code))
 
+
+    def generate_zip(self):
+        cakeme.fileutils.zip_dir(self.RESULT_DIR, self.OUT_ZIP)
+
+
     def run(self):
         self.MASCOT_DATABASE = self.get_mascot_databases()
         redundant_blib_file = os.path.join(self.WORK_DIR,  self.BLIB_FILE_REDUNDANT)
@@ -108,10 +100,14 @@ class BlibBuild(ApplicationBase):
         self.logResults()
         self.run_specL(self.MASCOT_DATABASE, self.MZ_ERROR, self.MIN_N, self.MAX_N, self.BLIB_FILE_REDUNDANT, self.BLIB_FILE_FILTERED)
         self.logResults()
+        self.generate_zip()
         return self.RESULT.return_code
+
+
 
 #class SpecLApplication(ApplicationBase):
 if __name__ == "__main__":
+
     datfile = sys.argv[1]
     res = get_db_from_mascot_dat(datfile)
     print res

@@ -1,0 +1,52 @@
+application:
+  input:
+    mascot_dat:
+    - bfabric@fgcz-s-018.uzh.ch://usr/local/mascot//data/20151015/F225868.dat
+    - bfabric@fgcz-s-018.uzh.ch://usr/local/mascot//data/20151012/F225716.dat
+    - bfabric@fgcz-s-018.uzh.ch://usr/local/mascot//data/20151012/F225712.dat
+  output:
+  - bfabric@fgczdata.fgcz-net.unizh.ch:/srv/www/htdocs//p1000/bfabric/Proteomics/DIA_Assay_Library_Generator/2015/2015-10/2015-10-27//workunit_136115//206577.zip
+  parameters:
+    mascot_database_location: /usr/local/mascot/sequence/
+    maxN: '6'
+    minN: '5'
+    mzError: '0.05'
+  protocol: scp
+job_configuration:
+  executable: /usr/bin/python /scratch/wolski/generateSpecLibrary/fgcz_AssayLibraryGeneration.py
+  external_job_id: 46907
+  input:
+    mascot_dat:
+    - extract_id: 33310
+      extract_url: http://fgcz-bfabric.uzh.ch/bfabric/userlab/show-extract.html?extractId=33310
+      resource_id: 205808
+      resource_url: http://fgcz-bfabric.uzh.ch/bfabric/userlab/show-resource.html?resourceId=205808
+      sample_id: 26407
+      sample_url: http://fgcz-bfabric.uzh.ch/bfabric/userlab/show-sample.html?sampleId=26407
+    - extract_id: 33310
+      extract_url: http://fgcz-bfabric.uzh.ch/bfabric/userlab/show-extract.html?extractId=33310
+      resource_id: 205632
+      resource_url: http://fgcz-bfabric.uzh.ch/bfabric/userlab/show-resource.html?resourceId=205632
+      sample_id: 26407
+      sample_url: http://fgcz-bfabric.uzh.ch/bfabric/userlab/show-sample.html?sampleId=26407
+    - extract_id: 33310
+      extract_url: http://fgcz-bfabric.uzh.ch/bfabric/userlab/show-extract.html?extractId=33310
+      resource_id: 205629
+      resource_url: http://fgcz-bfabric.uzh.ch/bfabric/userlab/show-resource.html?resourceId=205629
+      sample_id: 26407
+      sample_url: http://fgcz-bfabric.uzh.ch/bfabric/userlab/show-sample.html?sampleId=26407
+  output:
+    protocol: scp
+    resource_id: 206577
+    ssh_args: -o StrictHostKeyChecking=no -c arcfour -2 -l bfabric -x
+  stderr:
+    protocol: file
+    resource_id: 206578
+    url: /home/bfabric/sgeworker/logs/workunitid-136115_resourceid-206577.err
+  stdout:
+    protocol: file
+    resource_id: 206579
+    url: /home/bfabric/sgeworker/logs/workunitid-136115_resourceid-206577.out
+  workunit_id: 136115
+  workunit_url: http://fgcz-bfabric.uzh.ch/bfabric/userlab/show-workunit.html?workunitId=136115
+
