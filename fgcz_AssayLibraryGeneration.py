@@ -21,7 +21,7 @@ def replaceUriHeader2(path):
     return res
 
 class LibraryGenerationParametersNEW:
-    WORK_DIR = "."
+    WORK_DIR = "/scratch/wolski/specL"
     parameters = ''
     JOB_ID = -1
     LIST_OF_DAT_FILES = ""  # dat files to process

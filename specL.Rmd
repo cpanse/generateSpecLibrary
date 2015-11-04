@@ -12,7 +12,7 @@ toc : true
 
 ## Parameters
 
-```{r insallLatestversions, echo=FALSE, message=FALSE}
+```{r insallLatestversions, echo=FALSE, message=FALSE, eval=FALSE}
 #library(devtools)
 #install_github("wolski/prozor")
 #install_github("fgcz/specL")
@@ -40,6 +40,7 @@ if(!exists("OUTPUTDIR")){
   BLIB_FILTERED <- "blib.blib.filtered.db"
   BLIB_REDUNDANT <- "blib.blib.db"
   MZ_ERROR <- 0.8 # e.g for Q-Exactive
+  print("Using default parameters")
 } else{
   print("NOW I am starting to rock!")
 }
