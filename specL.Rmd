@@ -12,7 +12,7 @@ toc : true
 
 ## Parameters
 
-```{r insallLatestversions, echo=FALSE, message=FALSE, eval=TRUE}
+```{r insallLatestversions, echo=FALSE, message=FALSE, eval=FALSE}
 #library(devtools)
 #install_github("wolski/prozor")
 #install_github("fgcz/specL")
@@ -35,8 +35,8 @@ if(!exists("OUTPUTDIR")){
   OUTPUTDIR = "/scratch/wolski/specL/res.47165"
   WORKDIR = "/scratch/wolski/specL/temp.47165"
   FASTA_FILE <- "/usr/local/mascot/sequence/fgcz_9606_d/current/fgcz_9606_d_20140506.fasta"
-  MAX_IONS <- 5
-  MIN_IONS <- 6
+  MAX_IONS <- 6
+  MIN_IONS <- 5
   BLIB_FILTERED <- "blib.blib.filtered.db"
   BLIB_REDUNDANT <- "blib.blib.db"
   MZ_ERROR <- 0.8 # e.g for Q-Exactive
@@ -118,7 +118,6 @@ specLibrary <- genSwathIonLib(data = nonRedundantBlib,
   fragmentIonFUN = fragmentIonFunctionUpTo2)
 
 save(specLibrary , file = SPECLIBRARYRDATA )
-
 ```
 
 ## Library Generation Summary
@@ -134,6 +133,7 @@ if(length(specLibrary@ionlibrary) ==0){
 
 #load(SPECLIBRARYRDATA)
 summary(specLibrary)
+
 ```
 
 Total Number of PSM's with Mascot e score < 0.05, in your search is __`r length(redundantBlib)`__. The number of unique precurosors is __`r length(nonRedundantBlib)`__.
@@ -265,4 +265,5 @@ tmp = read.table(file=SWATH_LIBRARY,header=TRUE,sep="\t")
 # Summary
 
 The file `assay_library.tsv` contains a spectronaut compatible assay library. The assays in this file are annotated with razor proteins.
+
 

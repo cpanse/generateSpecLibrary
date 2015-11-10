@@ -6,7 +6,7 @@ if (length(args)>=4){
   OUTPUTDIR <- args[1]
   WORKDIR <- args[2]
   FASTA_FILE <- args[3]
-  MZ_ERROR <- as.integer(args[4]) 
+  MZ_ERROR <- as.numeric(args[4]) 
   MIN_IONS <- as.integer(args[5])
   MAX_IONS <- as.integer(args[6])
   BLIB_REDUNDANT <- args[7]
