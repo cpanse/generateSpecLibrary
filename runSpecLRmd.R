@@ -17,9 +17,9 @@ if (length(args)>=4){
       " MAX_IONS = ",MAX_IONS, " MIN_IONS = ", MIN_IONS," BLIB_REDUNDANT = ",
       BLIB_REDUNDANT, " BLIB_FILTERED = ",BLIB_FILTERED, "\n")
 
-  rmarkdown::render("specL.Rmd",output_format ="pdf_document", output_file = file.path(OUTPUTDIR, "SpecL.pdf"), clean=FALSE)
+  rmarkdown::render("/scratch/wolski/generateSpecLibrary/specL.Rmd",output_format ="pdf_document", output_file = file.path(OUTPUTDIR, "SpecL.pdf"), clean=FALSE)
 }else{
-  print("runSpecLRmd.R OUTPUTDIR INPUTDIR FASTA_FILE MIN_IONS MAX_IONS BLIB_FILTERED BLIB_REDUNDANT")
+  print("/scratch/wolski/generateSpecLibrary/runSpecLRmd.R OUTPUTDIR INPUTDIR FASTA_FILE MIN_IONS MAX_IONS BLIB_FILTERED BLIB_REDUNDANT")
   quit(status=1)
 }
 

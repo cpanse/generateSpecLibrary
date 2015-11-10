@@ -144,6 +144,7 @@ That means that __`r length(specLibrary@ionlibrary)/length(nonRedundantBlib) *10
 # Assigning identified precursors to proteins
 
 ```{r getPeptideProt, echo=FALSE, message=FALSE}
+
 protpep = getProteinPeptideTable(specLibrary)
 
 ```
@@ -162,7 +163,7 @@ save(protpepAnnot, file=file.path(OUTPUTDIR,"protprotpepAnnot.rda"))
 
 
 ```{r matrix, echo=FALSE}
-#load(file.path(OUTPUTDIR,"protprotpepAnnot.rda"))
+load(file.path(OUTPUTDIR,"protprotpepAnnot.rda"))
 ```
 
 ## Annotate peptides
@@ -199,61 +200,21 @@ plot(tmp2,ylab ="number of proteins",  xlab="number of precurosor assignments" ,
 
 ```
 
-- Least specific peptide precursor : 
-```{r} 
-names(uniq)[which.max(uniq)]
-```
-matching 
+- Least specific peptide precursor : `r names(uniq)[which.max(uniq)]` matching 
+`r max(uniq)` proteins.
 
-```{r} 
-max(uniq)
-```
-
-proteins.
-
-- Protein with most peptide assignments:
-```{r}
-max(tmp)
-names(tmp)[which.max(tmp)]
-```
+- Protein with most peptide assignments (`r max(tmp)`) : `r names(tmp)[which.max(tmp)]`  
 
 
-Number of annotated precursors is :
-```{r} 
-dim(pepProtMatrix)[1]
-```
-There are in total:
-```{r} 
-dim(protpepAnnot)[1]
-```
-precursor protein assingments.
-There are: 
-```{r} 
-sum(uniq == 1)
-```
-proteotypic precursors, while 
-```{r}
-dim(pepProtMatrix)[1] - sum(uniq == 1)
-```
-where assigned to 2 or more protein sequences.
+Number of annotated precursors is : __`r dim(pepProtMatrix)[1]`__.
+There are in total __`r dim(protpepAnnot)[1]`__ precursor protein assingments.
+There are __`r sum(uniq == 1)`__ proteotypic precursors, while __`r dim(pepProtMatrix)[1] - sum(uniq == 1)`__ where assigned to 2 or more protein sequences.
 
 ## Compute minimal protein set explaining peptides
 
-The 
-```{r}
-dim(pepProtMatrix)[1]
-```
-peptide precursors matched protein sequences assigned to 
-```{r} 
-dim(pepProtMatrix)[2]
-``` 
-unique protein identifies.
+The __`r dim(pepProtMatrix)[1]`__ peptide precursors matched protein sequences assigned to __`r dim(pepProtMatrix)[2]`__ unique protein identifies.
 
-The minimal protein set explaining precursors has a size of 
-```{r}
-length(unique(unlist(protPepAssingments)))
-``` 
-proteins.
+The minimal protein set explaining precursors has a size of __`r length(unique(unlist(protPepAssingments)))`__ proteins.
 
 ```{r writeSpecnaut, echo=FALSE, message=FALSE}
 write.spectronaut(specLibrary,file=SWATH_LIBRARY)
