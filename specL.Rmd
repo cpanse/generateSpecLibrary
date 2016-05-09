@@ -32,14 +32,14 @@ Library generation is run with the following parameters:
 
 ```{r setparameters, echo=FALSE}
 if(!exists("OUTPUTDIR")){
-  OUTPUTDIR = "/scratch/wolski/specL/res.47165"
-  WORKDIR = "/scratch/wolski/specL/temp.47165"
-  FASTA_FILE <- "/usr/local/mascot/sequence/fgcz_9606_d/current/fgcz_9606_d_20140506.fasta"
+  OUTPUTDIR = "/scratch/wolski/specL/res.49530"
+  WORKDIR = "/scratch/wolski/specL/temp.49530"
+  FASTA_FILE <- "/usr/local/mascot/sequence/SwissProt/current/SwissProt_2016_02.fasta"
   MAX_IONS <- 6
   MIN_IONS <- 5
   BLIB_FILTERED <- "blib.blib.filtered.db"
   BLIB_REDUNDANT <- "blib.blib.db"
-  MZ_ERROR <- 0.8 # e.g for Q-Exactive
+  MZ_ERROR <- 0.05 # e.g for Q-Exactive
   print("Using default parameters")
 } else{
   print("NOW I am starting to rock!")
