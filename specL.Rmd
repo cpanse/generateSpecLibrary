@@ -7,16 +7,15 @@ output: pdf_document
 toc : true
 ---
 
-
 # Generate Ion Libraries
 
 ## Parameters
 
-```{r insallLatestversions, echo=FALSE, message=FALSE, eval=FALSE}
+```{r installLatestversions, echo=FALSE, message=FALSE, eval=TRUE}
 #library(devtools)
 #install_github("wolski/prozor")
 #install_github("fgcz/specL")
-rm(list=ls())
+#rm(list=ls())
 library(prozor)
 library(specL)
 
@@ -26,20 +25,26 @@ library(specL)
 R.Version()$version.string
 library(specL)
 packageVersion('specL')
+
 ```
 
 Library generation is run with the following parameters:
 
 ```{r setparameters, echo=FALSE}
 if(!exists("OUTPUTDIR")){
-  OUTPUTDIR = "/scratch/wolski/specL/res.47165"
-  WORKDIR = "/scratch/wolski/specL/temp.47165"
-  FASTA_FILE <- "/usr/local/mascot/sequence/fgcz_9606_d/current/fgcz_9606_d_20140506.fasta"
+  #OUTPUTDIR = "/scratch/wolski/specL/res.47165"
+  #WORKDIR = "/scratch/wolski/specL/temp.47165"
+  
+  OUTPUTDIR = "C:/Users/wolski/prog/generateSpecLibrary/res.49562"
+  WORKDIR = "C:/Users/wolski/prog/generateSpecLibrary/temp.49562"
+  
+  
+  FASTA_FILE <- "D:/projects/p2069/data/fasta/p2069_db1_d_20160322.fasta"
   MAX_IONS <- 6
   MIN_IONS <- 5
   BLIB_FILTERED <- "blib.blib.filtered.db"
   BLIB_REDUNDANT <- "blib.blib.db"
-  MZ_ERROR <- 0.8 # e.g for Q-Exactive
+  MZ_ERROR <- 0.05 # e.g for Q-Exactive
   print("Using default parameters")
 } else{
   print("NOW I am starting to rock!")
@@ -82,6 +87,7 @@ system.time( nonRedundantBlib <- read.bibliospec(NON_REDUNDANT) )
 system.time( redundantBlib <- read.bibliospec(REDUNDANT) )
 save(redundantBlib, file=file.path(WORKDIR,"redundant.Rdata"))
 save(nonRedundantBlib, file=file.path(WORKDIR,"nonredundant.Rdata"))
+length(nonRedundantBlib)
 
 ```
 
@@ -89,7 +95,8 @@ save(nonRedundantBlib, file=file.path(WORKDIR,"nonredundant.Rdata"))
 Defined filtering function.
 
 ```{r defineFragmentFunction}
-  fragmentIonFunctionUpTo2 <- function (b, y) {
+
+fragmentIonFunctionUpTo2 <- function (b, y) {
   Hydrogen <- 1.007825
   Oxygen <- 15.994915
   Nitrogen <- 14.003074
@@ -106,18 +113,26 @@ Defined filtering function.
 #load(file.path(WORKDIR,"redundant.Rdata"))
 #load(file.path(WORKDIR,"nonredundant.Rdata"))
 #xx <- annotate.protein_id(nonRedundantBlib,file=FASTA_FILE)
+
 ```
 
 ```{r,echo=FALSE, message=FALSE, eval=TRUE}
-specLibrary <- genSwathIonLib(data = nonRedundantBlib,
+
+specLibrary <- genSwathIonLib(
+  data = nonRedundantBlib,
   data.fit = redundantBlib,
   max.mZ.Da.error = MZ_ERROR,
   topN = MAX_IONS,
   fragmentIonMzRange = FRAGMENTIONMZRANGE,
   fragmentIonRange = FRAGMENTIONRANGE,
-  fragmentIonFUN = fragmentIonFunctionUpTo2)
+  fragmentIonFUN = fragmentIonFunctionUpTo2
+  )
+
+plot(specLibrary)
 
 save(specLibrary , file = SPECLIBRARYRDATA )
+length(nonRedundantBlib)
+class(nonRedundantBlib[[1]])
 ```
 
 ## Library Generation Summary
@@ -125,6 +140,12 @@ save(specLibrary , file = SPECLIBRARYRDATA )
 ```{r,echo=FALSE}
 length(specLibrary)
 slotNames(specLibrary)
+
+length(specLibrary@rt.input)
+length(specLibrary@rt.normalized)
+specLibrary@ionlibrary[[1]]
+
+slotNames(specLibrary@ionlibrary[[1]])
 
 if(length(specLibrary@ionlibrary) ==0){
   library(knitr)
@@ -138,14 +159,16 @@ summary(specLibrary)
 
 Total Number of PSM's with Mascot e score < 0.05, in your search is __`r length(redundantBlib)`__. The number of unique precurosors is __`r length(nonRedundantBlib)`__.
 
-The size of the generated ion library is __`r length(specLibrary@ionlibrary)`__. 
+The size of the generated ion library is __`r length(specLibrary@ionlibrary)`__.
+
 That means that __`r length(specLibrary@ionlibrary)/length(nonRedundantBlib) *100`__ % of the unique precursors fullfilled the filtering criteria.
+
 
 # Assigning identified precursors to proteins
 
+
 ```{r getPeptideProt, echo=FALSE, message=FALSE}
 protpep = getProteinPeptideTable(specLibrary)
-
 ```
 
 ```{r prozor, echo=FALSE, message=FALSE }
@@ -155,26 +178,24 @@ spid <-grep("sp\\|",names(fasta))
 fasta = fasta[spid]
 
 protpepAnnot = annotatePeptides(protpep,fasta)
-head(protpep)
 save(protpepAnnot, file=file.path(OUTPUTDIR,"protprotpepAnnot.rda"))
-
 ```
 
 
-```{r matrix, echo=FALSE}
-#load(file.path(OUTPUTDIR,"protprotpepAnnot.rda"))
-```
 
 ## Annotate peptides
 
 ```{r, echo=FALSE, message=FALSE}
 library(Matrix)
-
 write.table(protpepAnnot,file=PEPPROTMAPPING,quote = FALSE, row.names = FALSE,sep="\t")
+load(file.path(OUTPUTDIR,"protprotpepAnnot.rda"))
+dim(protpepAnnot)
 
+head(protpepAnnot)
+length(unique(protpepAnnot$peptideSequence))
 pepProtMatrix = prepareMatrix(protpepAnnot)
-
-protPepAssingments = greedy(prepareMatrix(protpepAnnot,weighting="inverse"))
+dim(pepProtMatrix)
+protPepAssingments = greedy(pepProtMatrix)
 xx = cbind(names(protPepAssingments),protPepAssingments)
 
 for(i in 1:length(specLibrary@ionlibrary)){
@@ -199,66 +220,36 @@ plot(tmp2,ylab ="number of proteins",  xlab="number of precurosor assignments" ,
 
 ```
 
-- Least specific peptide precursor : 
-```{r} 
-names(uniq)[which.max(uniq)]
-```
-matching 
-
-```{r} 
-max(uniq)
-```
+- Least specific peptide precursor : `r names(uniq)[which.max(uniq)]` matching `r max(uniq)`
 
 proteins.
 
-- Protein with most peptide assignments:
-```{r}
-max(tmp)
-names(tmp)[which.max(tmp)]
-```
+- Protein `r names(tmp)[which.max(tmp)]` with most peptide assignments = `r max(tmp)`
 
 
-Number of annotated precursors is :
-```{r} 
-dim(pepProtMatrix)[1]
-```
-There are in total:
-```{r} 
-dim(protpepAnnot)[1]
-```
+Number of annotated precursors is :`r  dim(pepProtMatrix)[1]`
+
+There are in total: `r  dim(protpepAnnot)[1]`
 precursor protein assingments.
-There are: 
-```{r} 
-sum(uniq == 1)
-```
+There are: `r sum(uniq == 1)`
+
 proteotypic precursors, while 
-```{r}
-dim(pepProtMatrix)[1] - sum(uniq == 1)
-```
+`r dim(pepProtMatrix)[1] - sum(uniq == 1) `
 where assigned to 2 or more protein sequences.
 
 ## Compute minimal protein set explaining peptides
 
-The 
-```{r}
-dim(pepProtMatrix)[1]
-```
-peptide precursors matched protein sequences assigned to 
-```{r} 
-dim(pepProtMatrix)[2]
-``` 
-unique protein identifies.
+The  `r dim(pepProtMatrix)[1]` peptide precursors matched protein sequences assigned to 
+`r dim(pepProtMatrix)[2]` unique protein identifies.
 
 The minimal protein set explaining precursors has a size of 
-```{r}
-length(unique(unlist(protPepAssingments)))
-``` 
+`r length(unique(unlist(protPepAssingments)))` 
 proteins.
 
 ```{r writeSpecnaut, echo=FALSE, message=FALSE}
-write.spectronaut(specLibrary,file=SWATH_LIBRARY)
-tmp = read.table(file=SWATH_LIBRARY,header=TRUE,sep="\t")
 
+write.spectronaut(specLibrary,file=SWATH_LIBRARY)
+assay_library = read.table(file=SWATH_LIBRARY,header=TRUE,sep="\t")
 ```
 
 
