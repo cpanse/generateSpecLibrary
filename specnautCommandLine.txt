@@ -1,9 +1,5 @@
 Spectronaut.exe –d “C:\data\My Experiment” –a “C:\data\My Experiment\library.txt” –s “my_settings” –o “C:\data\My Experiment\Results” –n “My Experiment 1” –f “.*\.wiff
-
-
-
-Spectronaut.exe  -d "D:\FGCZ\p1000\Spectronaut\wolski_20150803_testingspecnautcommandline" -a "D:\FGCZ\p1000\Spectronaut\wolski_20150803_testingspecnautcommandline\p1503_lib_individualFiles.csv" -o "D:\FGCZ\p1000\Spectronaut\wolski_20150803_testingspecnautcommandline" -n "first try" -s "CJWSchema.rs" -f ".*\.raw"
-
+Spectronaut.exe -d "D:\FGCZ\p1000\Spectronaut\wolski_20150803_testingspecnautcommandline" -a "D:\FGCZ\p1000\Spectronaut\wolski_20150803_testingspecnautcommandline\p1503_lib_individualFiles.csv" -o "D:\FGCZ\p1000\Spectronaut\wolski_20150803_testingspecnautcommandline" -n "first try" -s "CJWSchema.rs" -f ".*\.raw"
 
 C:\Program Files (x86)\Biognosys\Spectronaut\bin>Spectronaut.exe  -d "D:\FGCZ\p1000\Spectronaut\wolski_20150803_testingspecnautcommandline"
 ectronaut\wolski_20150803_testingspecnautcommandline\p1503_lib_individualFiles.csv" -o "D:\FGCZ\p1000\Spectronaut\wolski_20150803_testingsp

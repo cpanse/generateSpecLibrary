@@ -101,10 +101,10 @@ class BlibBuild(ApplicationBase):
 
     def run(self):
         self.MASCOT_DATABASE = self.get_mascot_databases()
-        redundant_blib_file = os.path.join(self.WORK_DIR, self.BLIB_FILE_REDUNDANT)
+        redundant_blib_file = os.path.join(self.RESULT_DIR, self.BLIB_FILE_REDUNDANT)
         self.run_blib_build(self.mascot_dat_files, redundant_blib_file)
         self.logResults()
-        filtered_blib_file = os.path.join(self.WORK_DIR, self.BLIB_FILE_FILTERED)
+        filtered_blib_file = os.path.join(self.RESULT_DIR, self.BLIB_FILE_FILTERED)
         self.run_blib_filter(redundant_blib_file, filtered_blib_file)
         self.logResults()
         self.run_specL(self.MASCOT_DATABASE, self.MZ_ERROR, self.MIN_N, self.MAX_N, self.BLIB_FILE_REDUNDANT,
