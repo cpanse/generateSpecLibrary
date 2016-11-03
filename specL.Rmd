@@ -36,9 +36,7 @@ if(!exists("OUTPUTDIR")){
   #WORKDIR = "/scratch/wolski/specL/temp.47165"
   
   OUTPUTDIR = "C:/Users/wolski/prog/generateSpecLibrary/res.49562"
-  WORKDIR = "C:/Users/wolski/prog/generateSpecLibrary/temp.49562"
-  
-  
+
   FASTA_FILE <- "D:/projects/p2069/data/fasta/p2069_db1_d_20160322.fasta"
   MAX_IONS <- 6
   MIN_IONS <- 5
@@ -57,9 +55,9 @@ PEPPROTMAPPING <- file.path(OUTPUTDIR, "pepprot.tsv")
 FRAGMENTIONMZRANGE <- c(300,1250)
 FRAGMENTIONRANGE <- c(MIN_IONS,200)
 
-ANNOTATEDRDATA <- file.path(WORKDIR,"Annotated.RData")
-NON_REDUNDANT <- file.path(WORKDIR,BLIB_FILTERED)
-REDUNDANT <- file.path(WORKDIR,BLIB_REDUNDANT)
+ANNOTATEDRDATA <- file.path(OUTPUTDIR,"Annotated.RData")
+NON_REDUNDANT <- file.path(OUTPUTDIR,BLIB_FILTERED)
+REDUNDANT <- file.path(OUTPUTDIR,BLIB_REDUNDANT)
 
 if(TRUE){
 cat("Set params SPECLIBRARYRDATA = ",SPECLIBRARYRDATA , "\n",
@@ -83,10 +81,11 @@ cat(" MZ_ERROR = ",MZ_ERROR, "\n",
 ```
 
 ```{r readDatabases, eval=TRUE, echo=FALSE, message=FALSE}
+print(NON_REDUNDANT)
 system.time( nonRedundantBlib <- read.bibliospec(NON_REDUNDANT) )
 system.time( redundantBlib <- read.bibliospec(REDUNDANT) )
-save(redundantBlib, file=file.path(WORKDIR,"redundant.Rdata"))
-save(nonRedundantBlib, file=file.path(WORKDIR,"nonredundant.Rdata"))
+save(redundantBlib, file=file.path(OUTPUTDIR,"redundant.Rdata"))
+save(nonRedundantBlib, file=file.path(OUTPUTDIR,"nonredundant.Rdata"))
 length(nonRedundantBlib)
 
 ```

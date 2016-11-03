@@ -82,9 +82,8 @@ class BlibBuild(ApplicationBase):
                 "Return code of Command {} is not as expected : {}".format(blib_command, self.RESULT.return_code))
 
     def run_specL(self, fasta_file, mzError, minN, maxN, redundant_blib, filtered_blib):
-        specL_command = "/scratch/wolski/generateSpecLibrary/runSpecLRmd.R {resdir} {workdir} {fasta} {mzerr} {minN} {maxN} {redblib} {filtblib}".format(
+        specL_command = "/scratch/wolski/generateSpecLibrary/runSpecLRmd.R {resdir} {fasta} {mzerr} {minN} {maxN} {redblib} {filtblib}".format(
             resdir=self.RESULT_DIR,
-            workdir=self.WORK_DIR,
             fasta=fasta_file,
             mzerr=mzError,
             minN=minN,
