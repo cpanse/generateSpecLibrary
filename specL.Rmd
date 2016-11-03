@@ -12,10 +12,7 @@ toc : true
 ## Parameters
 
 ```{r installLatestversions, echo=FALSE, message=FALSE, eval=TRUE}
-#library(devtools)
-#install_github("wolski/prozor")
-#install_github("fgcz/specL")
-#rm(list=ls())
+
 library(prozor)
 library(specL)
 
@@ -40,33 +37,30 @@ if(!exists("OUTPUTDIR")){
   FASTA_FILE <- "D:/projects/p2069/data/fasta/p2069_db1_d_20160322.fasta"
   MAX_IONS <- 6
   MIN_IONS <- 5
-  BLIB_FILTERED <- "blib.blib.filtered.db"
-  BLIB_REDUNDANT <- "blib.blib.db"
+  BLIB_FILTERED <- "test0.9.filtered.blib"
+  BLIB_REDUNDANT <- "test0.9.blib"
   MZ_ERROR <- 0.05 # e.g for Q-Exactive
   print("Using default parameters")
 } else{
   print("NOW I am starting to rock!")
 }
 
-SPECLIBRARYRDATA = file.path(OUTPUTDIR, "specLLibrary.RData")
 SWATH_LIBRARY <- file.path(OUTPUTDIR, "assay_library.tsv")
 PEPPROTMAPPING <- file.path(OUTPUTDIR, "pepprot.tsv")
 
 FRAGMENTIONMZRANGE <- c(300,1250)
 FRAGMENTIONRANGE <- c(MIN_IONS,200)
 
-ANNOTATEDRDATA <- file.path(OUTPUTDIR,"Annotated.RData")
 NON_REDUNDANT <- file.path(OUTPUTDIR,BLIB_FILTERED)
 REDUNDANT <- file.path(OUTPUTDIR,BLIB_REDUNDANT)
 
 if(TRUE){
-cat("Set params SPECLIBRARYRDATA = ",SPECLIBRARYRDATA , "\n",
-    " SWATH_LIBRARY = ", SWATH_LIBRARY, "\n", 
+cat(" SWATH_LIBRARY = ", SWATH_LIBRARY, "\n", 
     " PEPPROTMAPPING = ",PEPPROTMAPPING , "\n",
-    " ANNOTATEDRDATA = ",ANNOTATEDRDATA, "\n",
     " NON_REDUNDANT = ",NON_REDUNDANT , "\n",
     " REDUNDANT = ",REDUNDANT, "\n" )
 }
+
 ```
 
 ```{r, echo=FALSE}
@@ -108,12 +102,6 @@ fragmentIonFunctionUpTo2 <- function (b, y) {
 
 ```
 
-```{r generateLibrary,echo=FALSE, message=FALSE}
-#load(file.path(WORKDIR,"redundant.Rdata"))
-#load(file.path(WORKDIR,"nonredundant.Rdata"))
-#xx <- annotate.protein_id(nonRedundantBlib,file=FASTA_FILE)
-
-```
 
 ```{r,echo=FALSE, message=FALSE, eval=TRUE}
 
@@ -129,7 +117,6 @@ specLibrary <- genSwathIonLib(
 
 plot(specLibrary)
 
-save(specLibrary , file = SPECLIBRARYRDATA )
 length(nonRedundantBlib)
 class(nonRedundantBlib[[1]])
 ```
@@ -151,7 +138,6 @@ if(length(specLibrary@ionlibrary) ==0){
   opts_chunk$set(eval=FALSE, message=FALSE, echo=FALSE)
 }
 
-#load(SPECLIBRARYRDATA)
 summary(specLibrary)
 
 ```
@@ -180,20 +166,14 @@ protpepAnnot = annotatePeptides(protpep,fasta)
 save(protpepAnnot, file=file.path(OUTPUTDIR,"protprotpepAnnot.rda"))
 ```
 
-
-
 ## Annotate peptides
 
 ```{r, echo=FALSE, message=FALSE}
 library(Matrix)
 write.table(protpepAnnot,file=PEPPROTMAPPING,quote = FALSE, row.names = FALSE,sep="\t")
 load(file.path(OUTPUTDIR,"protprotpepAnnot.rda"))
-dim(protpepAnnot)
 
-head(protpepAnnot)
-length(unique(protpepAnnot$peptideSequence))
 pepProtMatrix = prepareMatrix(protpepAnnot)
-dim(pepProtMatrix)
 protPepAssingments = greedy(pepProtMatrix)
 xx = cbind(names(protPepAssingments),protPepAssingments)
 
@@ -246,7 +226,10 @@ The minimal protein set explaining precursors has a size of
 proteins.
 
 ```{r writeSpecnaut, echo=FALSE, message=FALSE}
-
+if(file.exists(SWATH_LIBRARY)){
+  file.remove(SWATH_LIBRARY)
+}
+slotNames(specLibrary)
 write.spectronaut(specLibrary,file=SWATH_LIBRARY)
 assay_library = read.table(file=SWATH_LIBRARY,header=TRUE,sep="\t")
 ```
