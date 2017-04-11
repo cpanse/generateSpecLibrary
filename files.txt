@@ -1,6 +1,0 @@
-/usr/local/mascot/data/20150715/F221103.dat
-/usr/local/mascot/data/20150715/F221097.dat
-/usr/local/mascot/data/20150715/F221096.dat
-/usr/local/mascot/data/20150715/F221095.dat
-/usr/local/mascot/data/20150715/F221094.dat
-#/usr/local/mascot/data/20150714/F221061.dat
